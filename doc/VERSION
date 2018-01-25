@@ -1,0 +1,122 @@
+This is version 2.3 of SocketMUD(tm).
+
+01 Aug 2001 - SocketMUD(tm) v 0.1
+=================================
+The very first release of SocketMUD(tm). This is the only version of 
+SocketMUD(tm) for which the code no longer exists.
+
+09 Mar 2002 - SocketMUD(tm) v 1.0
+=================================
+Bugfixes in get_time() and new_socket() and various cleanups in the
+code which allows us to use the -pedantic compile flag.
+
+26 Feb 2003 - SocketMUD(tm) v 1.1
+=================================
+Bugfixes for cmd_linkdead(), new version of text_to_buffer(). The log()
+and bug() functions where recoded. And copyover/mccp should be more sane.
+
+22 Mar 2003 - SocketMUD(tm) v 1.2
+=================================
+Removed the unused save_whois() function, compressEnd() handles
+compression more sane (had a problem with mccp v1 & v2 at the same
+time).  This is the first version of SocketMUD(tm) that uses game
+pulses.
+
+02 Apr 2003 - SocketMUD(tm) v 1.3
+=================================
+Passwords can no longer contain invalid characters (ie. characters that
+are encrypted to ~, messing with the load/save functions). Also in
+compressEnd() we no longer flush residual data to prevent gargage output.
+
+01 May 2003 - SocketMUD(tm) v 1.4
+=================================
+Renamed log() was renamed to log_string() to avoid conflict with the
+math library. Fixed a crashbug in load_helps. Added add_help() which
+sorts loaded helpfiles (this is later removed - a new sorting function
+is a pending feature).
+
+06 Sep 2003 - SocketMUD(tm) v 1.5
+=================================
+Removed the capitalization of the first letter in communicate(). A bug
+in load_helps() was fixed as well as a related bug in read_help_entry().
+
+02 Oct 2003 - SocketMUD(tm) v 1.6
+=================================
+Fixed a memory leak in the SREAD() macro.
+
+07 Jan 2004 - SocketMUD(tm) v 1.7
+=================================
+Better copyover "checking" in main(), fixed spelling in mud.h and redid
+how helpfiles are loaded (we now load all files in the help directory).
+As a sideeffect, helpfiles can be added (while the game is running) simply
+by adding a new file in the help directory, and changing a helpfile will
+directly change the help in the running MUD :)
+
+11 Jan 2004 - SocketMUD(tm) v 1.8
+=================================
+Fixed current_time (it was never updated), fixed a comment in update.c.
+Simple codechange from getdtablesize() to the FD_SETSIZE macro, which
+should be more portable. Bugfix: fread_string() now replaces all \n's
+with \r\n (certain clients require this).
+
+14 Jul 2004 - SocketMUD(tm) v 1.9
+=================================
+Fixed the comment for fread_string, and made changes to the Makefile
+which makes it easier to use the Cygwin patch. Switched from static
+clearing of structs to using bzero().
+
+12 Dec 2004 - SocketMUD(tm) v 1.10
+==================================
+The comments for socket and thread states are now correct. Fixed the
+text_to_buffer() function. Bugfix: buffer_clear() now actually clears
+the buffer, preventing datableeding.
+
+11 Sep 2005 - SocketMUD(tm) v 2.0
+=================================
+Ripped out the old "inline" linked lists, and replaced them with a generic
+linked list system. Also added a Stack datastructure, which is used to
+store our free-"lists". Made certain changes to the Makefil and ran the
+entire program through Valgrind, making sure we had no memory leaks.
+The event system is now a default part of the SocketMUD(tm) codebase.
+
+The major changes from SocketMUD(tm) 1.10 to 2.0 makes it practically
+impossible to maintain a patchfile for upgrades from the 1.x versions to
+the 2.x versions (which is the major reason for upping the version
+number).
+
+27 Nov 2005 - SocketMUD(tm) v 2.1
+=================================
+In strings.c, the function strdup() now allocates the
+correct amount of memory (len+1)
+
+A potential memory leak in the linked lists has been
+fixed. If a list is _never_ iterated over (like local
+event lists), no cells in the list are ever free'd.
+In DetachFromList() we now check if there is an
+iterator over the list before we call InvalidateCell()
+and free the cell instead if there are no iterators.
+
+08 Oct 2007 - SocketMUD(tm) v 2.2
+=================================
+A memory leak in event_isset_mobile() was found by Lobotomy, and another
+small security issue was also fixed in the help system.
+
+The iterators used for the linked list system are no longer allocated and
+free'd using malloc/free calls, for improved performance.
+
+22 Oct 2008 - SocketMUD(tm) v 2.3
+=================================
+Another year another release ;)
+
+Christopher Schuler (Lobotomy) has been busy with bug reports, and this
+release removes some unused members in the event_data struct, fixes
+a buffer-size check in io.c and makes the copyover-check for arguments
+more robust against variable argument copyovers
+
+14 Mar 2009 - SocketMUD(tm) v 2.4
+=================================
+Scott Dunlop was kind enough to point out a buffer overflow in the
+communicate function (exploitable through the say command), which has
+been fixed in this release. While I was at it, I also removed all use
+of the plain printf-family functions, and started using the safe
+versions of these functions (snprintf, etc).

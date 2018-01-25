@@ -1,0 +1,14 @@
+SocketMud(tm) supports ANSI colors, and you can access them by using the
+'#' character, followed by the colorkey from the table below.
+
+Yellow    #yy #YY#n
+Blue      #bb #BB#n
+Green     #gg #GG#n
+Red       #rr #RR#n
+Cyan      #cc #CC#n
+Purple    #pp #PP#n
+Dark      #dd #DD#n
+White     #ww #WW#n
+
+The 'n' key is the default SocketMud(tm) color, and the mudcolor will
+always revert to this color at the end of a string.

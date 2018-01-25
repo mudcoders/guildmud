@@ -1,0 +1,10 @@
+SocketMUD(tm) was originally coded by Brian Graversen and improved upon by
+the various coders in the community that took the time to return useful
+feedback.
+
+Thanks goes to Beej for his network guide, which got me started with 
+network programming, and to Erwin Andreasen whose various small articles
+on MUD programming and useful bits of code has helped my over the time.
+
+Thanks also goes to all the helpful people who have spend the time to help
+me improve on the original SocketMUD(tm) release.

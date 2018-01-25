@@ -1,0 +1,13 @@
+SocketMUD(tm) is released under Public Domain. Parts of the code was 
+written by Erwin Andreasen (http://www.andreasen.org/), and even though
+the code written by Erwin is also public domain, it would be nice if any 
+user of this codebase would keep the credits for Erwin. The copyover and 
+buffer code is inspired, converted and sometimes copy/pasted from the code 
+found on his website.
+
+The MUD has support for the mud compression protocol (MCCP), and thus
+contains the mccp.c file by Oliver Jowett. The only restrictions enforced
+by this, is that the mccp.c file contains the original header (as stated
+in the header file).
+
+The are no restrictions of any kind on the rest of SocketMUD(tm).

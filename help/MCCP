@@ -1,0 +1,13 @@
+The Mud Client Compression Protocol has the purpose of reducing the
+bandwidth usage of the mudserver, by using an MCCP-complient mudclient,
+the data send to you will be compressed by 80-85%, and thus not only
+reducing the amount of data processed by the server, but also greatly
+reduces the amount of data you need to download (i.e. less lag for you).
+
+This MUD supports both versions 1 and 2 of the compression protocol,
+and any client supporting either of those version can be used to
+enable compression. Most clients enable compression automatically,
+but some require that you type 'compress'. The same command can also
+be used to disable compression.
+
+MCCP was created by Oliver Jowett

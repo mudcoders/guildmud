@@ -1,0 +1,34 @@
+SocketMud version 2.4
+
+Little mud project, which has a command interpreter and supports
+ANSI colors... has a nifty little help file system, and a few
+commands (say, quit, who, etc). Also supports MCCP version 1 and 2.
+
+Simply type 'make' in the ../src/ directory, and start the mud
+by typing './SocketMud &'. You can now connect by telnetting
+to port 9009 on localhost (or whatever machine it runs on).
+
+Thanks goes to the community of coders that have helped with bugfixes, 
+typos, ideas and improvements on the codebase.
+
+ANSI C
+======
+For those wanting the code to compile with the -ansi flag (for ANSI C
+compliance), I have made sure that almost the entire codebase works
+out of the box - there are only three functions giving problems. These
+are the isascii() macro, the gethostbyaddr_r() function and the
+vsnprintf() function call. The first macro is easy enough to fix, simply
+add something like this to mud.h
+
+#define isascii(c)              (((c) & ~0x7f) == 0)
+
+The call to gethostbyaddr_r() will probably be the worst part. The only
+real solution I see, is to remove the threaded calls for DNS lookups,
+and simple live with using gethostbyaddr() calls.
+
+The vsnprintf() call can simply be replaced by vsprintf(), though you
+will then risk writing beyond the end of the buffer.
+
+Code and all that by
+
+Brian Graversen (jobo@daimi.au.dk)
