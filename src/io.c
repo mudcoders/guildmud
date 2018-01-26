@@ -3,7 +3,7 @@
  */
 #include <sys/types.h>
 #include <stdio.h>
-#include <unistd.h>  
+#include <unistd.h>
 #include <sys/stat.h>
 #include <string.h>
 #include <stdarg.h>
@@ -27,7 +27,8 @@ void log_string(const char *txt, ...)
   FILE *fp;
   char logfile[MAX_BUFFER];
   char buf[MAX_BUFFER];
-  char *strtime = get_time();
+  char *strtime = get_timestamp();
+  char *strdate = get_date();
   va_list args;
 
   va_start(args, txt);
@@ -35,7 +36,7 @@ void log_string(const char *txt, ...)
   va_end(args);
 
   /* point to the correct logfile */
-  snprintf(logfile, MAX_BUFFER, "../log/%6.6s.log", strtime);
+  snprintf(logfile, MAX_BUFFER, "../log/%s.log", strdate);
 
   /* try to open logfile */
   if ((fp = fopen(logfile, "a")) == NULL)
@@ -61,7 +62,7 @@ void bug(const char *txt, ...)
   FILE *fp;
   char buf[MAX_BUFFER];
   va_list args;
-  char *strtime = get_time();
+  char *strtime = get_timestamp();
 
   va_start(args, txt);
   vsnprintf(buf, MAX_BUFFER, txt, args);
@@ -279,7 +280,7 @@ char *fread_word(FILE *fp)
   int c, count = 0;
 
   /* initial read */
-  c = getc(fp); 
+  c = getc(fp);
 
   /* speed through leading spaces and linebreaks */
   while (c != EOF && (c == ' ' || c == '\n'))
