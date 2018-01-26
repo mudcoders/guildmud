@@ -35,7 +35,7 @@
 #define MUDPORT            9009                   /* just set whatever port you want    */
 #define FILE_TERMINATOR    "EOF"                  /* end of file marker                 */
 #define COPYOVER_FILE      "../txt/copyover.dat"  /* tempfile to store copyover data    */
-#define EXE_FILE           "../src/SocketMud"     /* the name of the mud binary         */
+#define EXE_FILE           "../src/guildmud"      /* the name of the mud binary         */
 
 /* Connection states */
 #define STATE_NEW_NAME         0
