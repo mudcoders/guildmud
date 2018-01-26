@@ -189,7 +189,7 @@ extern  char        *   motd;             /* the MOTD help file                 
 extern  int             control;          /* boot control socket thingy         */
 extern  time_t          current_time;     /* let's cut down on calls to time()  */
 
-/*************************** 
+/***************************
  * End of Global Variables *
  ***************************/
 
@@ -255,7 +255,7 @@ char   *fread_string          ( FILE *fp );                 /* allocated data  *
 char   *fread_word            ( FILE *fp );                 /* pointer         */
 int     fread_number          ( FILE *fp );                 /* just an integer */
 
-/* 
+/*
  * strings.c
  */
 char   *one_arg               ( char *fStr, char *bStr );
@@ -283,7 +283,8 @@ void  clear_mobile            ( D_M *dMob );
 void  free_mobile             ( D_M *dMob );
 void  communicate             ( D_M *dMob, char *txt, int range );
 void  load_muddata            ( bool fCopyOver );
-char *get_time                ( void );
+char *get_timestamp           ( void );
+char *get_date                ( void );
 void  copyover_recover        ( void );
 D_M  *check_reconnect         ( char *player );
 

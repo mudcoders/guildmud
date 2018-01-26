@@ -103,7 +103,7 @@ void communicate(D_MOBILE *dMob, char *txt, int range)
  * Loading of help files, areas, etc, at boot time.
  */
 void load_muddata(bool fCopyOver)
-{  
+{
   load_helps();
 
   /* copyover */
@@ -111,60 +111,70 @@ void load_muddata(bool fCopyOver)
     copyover_recover();
 }
 
-char *get_time()
+char *get_timestamp()
 {
-  static char buf[16];
-  char *strtime;
-  int i;
+  static char buf[26];
+  struct tm* tm_info;
 
-  strtime = ctime(&current_time);
-  for (i = 0; i < 15; i++)   
-    buf[i] = strtime[i + 4];
-  buf[15] = '\0';
+  tm_info = localtime(&current_time);
+
+  strftime(buf, 26, "%Y-%m-%d %H:%M:%S", tm_info);
+
+  return buf;
+}
+
+char *get_date()
+{
+  static char buf[26];
+  struct tm* tm_info;
+
+  tm_info = localtime(&current_time);
+
+  strftime(buf, 26, "%Y-%m-%d", tm_info);
 
   return buf;
 }
 
 /* Recover from a copyover - load players */
 void copyover_recover()
-{     
+{
   D_MOBILE *dMob;
   D_SOCKET *dsock;
   FILE *fp;
   char name [100];
   char host[MAX_BUFFER];
   int desc;
-      
+
   log_string("Copyover recovery initiated");
-   
+
   if ((fp = fopen(COPYOVER_FILE, "r")) == NULL)
-  {  
+  {
     log_string("Copyover file not found. Exitting.");
     exit (1);
   }
-      
+
   /* In case something crashes - doesn't prevent reading */
   unlink(COPYOVER_FILE);
-    
+
   for (;;)
-  {  
+  {
     fscanf(fp, "%d %s %s\n", &desc, name, host);
     if (desc == -1)
       break;
 
     dsock = malloc(sizeof(*dsock));
     clear_socket(dsock, desc);
-  
+
     dsock->hostname     =  strdup(host);
     AttachToList(dsock, dsock_list);
- 
+
     /* load player data */
     if ((dMob = load_player(name)) != NULL)
     {
       /* attach to socket */
       dMob->socket     =  dsock;
       dsock->player    =  dMob;
-  
+
       /* attach to mobile list */
       AttachToList(dMob, dmobile_list);
 
@@ -176,14 +186,14 @@ void copyover_recover()
       close_socket(dsock, FALSE);
       continue;
     }
-   
+
     /* Write something, and check if it goes error-free */
     if (!text_to_socket(dsock, "\n\r <*>  And before you know it, everything has changed  <*>\n\r"))
-    { 
+    {
       close_socket(dsock, FALSE);
       continue;
     }
-  
+
     /* make sure the socket can be used */
     dsock->bust_prompt    =  TRUE;
     dsock->lookup_status  =  TSTATE_DONE;
@@ -194,7 +204,7 @@ void copyover_recover()
     text_to_buffer(dsock, (char *) compress_will);
   }
   fclose(fp);
-}     
+}
 
 D_MOBILE *check_reconnect(char *player)
 {
