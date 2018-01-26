@@ -66,7 +66,7 @@ D_MOBILE *load_player(char *player)
   pName[i] = '\0';
 
   /* open the pfile so we can write to it */
-  snprintf(pfile, MAX_BUFFER, "../players/%s.pfile", pName);     
+  snprintf(pfile, MAX_BUFFER, "../players/%s.pfile", pName);
   if ((fp = fopen(pfile, "r")) == NULL)
     return NULL;
 
@@ -205,13 +205,13 @@ void save_profile(D_MOBILE *dMob)
   char pName[MAX_BUFFER];
   FILE *fp;
   int size, i;
-  
+
   pName[0] = toupper(dMob->name[0]);
   size = strlen(dMob->name);
   for (i = 1; i < size && i < MAX_BUFFER - 1; i++)
     pName[i] = tolower(dMob->name[i]);
   pName[i] = '\0';
-  
+
   /* open the pfile so we can write to it */
   snprintf(pfile, MAX_BUFFER, "../players/%s.profile", pName);
   if ((fp = fopen(pfile, "w")) == NULL)
