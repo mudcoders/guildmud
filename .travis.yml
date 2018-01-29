@@ -1,0 +1,17 @@
+language: c
+
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+      addons:
+        apt:
+          packages:
+            - zlib1g-dev
+    - os: osx
+
+compiler: gcc
+
+script:
+  - cd src
+  - make

@@ -1,5 +1,5 @@
 CC      = gcc
-C_FLAGS = -Wall -g -pedantic
+C_FLAGS = -Wall -g -pedantic -Werror
 L_FLAGS = -lz -lpthread
 
 O_FILES = socket.o io.o strings.o utils.o interpret.o help.o  \
