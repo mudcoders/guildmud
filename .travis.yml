@@ -1,0 +1,13 @@
+language: c
+
+os:
+  - linux
+  - osx
+
+compiler: gcc
+
+install: make zlib1g-dev
+
+script:
+  - cd src
+  - make
