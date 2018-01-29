@@ -1,8 +1,10 @@
 language: c
 
-os:
-  - linux
-  - osx
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+    - os: osx
 
 compiler: gcc
 
