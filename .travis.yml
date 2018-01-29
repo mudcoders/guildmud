@@ -4,11 +4,13 @@ matrix:
   include:
     - os: linux
       dist: trusty
+      addons:
+        apt:
+          packages:
+            - zlib1g-dev
     - os: osx
 
 compiler: gcc
-
-install: make zlib1g-dev
 
 script:
   - cd src
