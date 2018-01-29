@@ -1063,7 +1063,7 @@ void *lookup_address(void *arg)
   int rc;
 
   /* do the lookup and store the result at &from */
-  rc = getnameinfo(lData->sa, lData->sa->sa_len, hbuf, sizeof(hbuf), sbuf, sizeof(sbuf), NI_NAMEREQD);
+  rc = getnameinfo(lData->sa, sizeof(lData->sa), hbuf, sizeof(hbuf), sbuf, sizeof(sbuf), NI_NAMEREQD);
 
   /* did we get anything ? */
   if (0 == rc)
