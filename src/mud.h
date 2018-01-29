@@ -149,7 +149,8 @@ struct help_data
 struct lookup_data
 {
   D_SOCKET       * dsock;   /* the socket we wish to do a hostlookup on */
-  char           * buf;     /* the buffer it should be stored in        */
+  struct sockaddr    *sa;   
+  //char           * buf;     /* the buffer it should be stored in        */
 };
 
 struct typCmd

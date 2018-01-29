@@ -345,7 +345,7 @@ bool new_socket(int sock)
       }
 
       /* Set the lookup_data for use in lookup_address() */
-      lData->buf    =  strdup((char *) &sock_addr.sin_addr);
+      lData->sa    =  (struct sockaddr *) &sock_addr;
       lData->dsock  =  sock_new;
 
       /* dispatch the lookup thread */
@@ -1058,26 +1058,24 @@ void clear_socket(D_SOCKET *sock_new, int sock)
 void *lookup_address(void *arg)
 {
   LOOKUP_DATA *lData = (LOOKUP_DATA *) arg;
-  struct hostent *from = 0;
-  struct hostent ent;
-  char buf[16384];
-  int err;
+
+  char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
+  int rc;
 
   /* do the lookup and store the result at &from */
-  gethostbyaddr_r(lData->buf, sizeof(lData->buf), AF_INET, &ent, buf, 16384, &from, &err);
+  rc = getnameinfo(lData->sa, sizeof(lData->sa), hbuf, sizeof(hbuf), sbuf, sizeof(sbuf), NI_NAMEREQD);
 
   /* did we get anything ? */
-  if (from && from->h_name)
+  if (0 == rc)
   {
     free(lData->dsock->hostname);
-    lData->dsock->hostname = strdup(from->h_name);
+    lData->dsock->hostname = strdup(hbuf);
   }
 
   /* set it ready to be closed or used */
   lData->dsock->lookup_status++;
 
   /* free the lookup data */
-  free(lData->buf);
   free(lData);
 
   /* and kill the thread */
