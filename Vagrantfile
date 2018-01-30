@@ -11,10 +11,10 @@ Vagrant.configure("2") do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "precise64"
+  config.vm.box = "ubuntu/xenial64"
 
   # set ip address to 192.168.90.09
-  config.vm.network "private_network", ip: "192.168.90.09", hostsupdater: "skip"
+  config.vm.network "private_network", ip: "192.168.90.9", hostsupdater: "skip"
 
   # set hostname
   config.vm.hostname = "guildmud.dev"
