@@ -7,46 +7,29 @@
 /* main header file */
 #include "mud.h"
 
-void save_pfile           ( D_MOBILE *dMob );
-void save_profile         ( D_MOBILE *dMob );
-
 void save_player(D_MOBILE *dMob)
 {
-  if (!dMob) return;
-
-  save_pfile(dMob);      /* saves the actual player data */
-  save_profile(dMob);    /* saves the players profile    */
-}
-
-void save_pfile(D_MOBILE *dMob)
-{
-  char pName[MAX_BUFFER];
-  char pfile[MAX_BUFFER];
-  FILE *fp;
-  int size, i;
-
-  pName[0] = toupper(dMob->name[0]);
-  size = strlen(dMob->name);
-  for (i = 1; i < size && i < MAX_BUFFER - 1; i++)
-    pName[i] = tolower(dMob->name[i]);
-  pName[i] = '\0';
-
-  /* open the pfile so we can write to it */
-  snprintf(pfile, MAX_BUFFER, "../players/%s.pfile", pName);
-  if ((fp = fopen(pfile, "w")) == NULL)
+  if (!dMob)
   {
-    bug("Unable to write to %s's pfile", dMob->name);
     return;
   }
 
-  /* dump the players data into the file */
-  fprintf(fp, "Name            %s~\n", dMob->name);
-  fprintf(fp, "Level           %d\n",  dMob->level);
-  fprintf(fp, "Password        %s~\n", dMob->password);
+  if ( !db_open() )
+  {
+    return;
+  }
 
-  /* terminate the file */
-  fprintf(fp, "%s\n", FILE_TERMINATOR);
-  fclose(fp);
+  if ( !db_execute("CREATE TABLE IF NOT EXISTS players (id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE, password TEXT NOT NULL, level INTEGER)") )
+  {
+    return;
+  }
+
+  if ( !db_execute("INSERT INTO PLAYERS (name, password, level) VALUES (%s, %s, %i)", dMob->name, dMob->password, dMob->level) )
+  {
+    return;
+  }
+
+  db_close();
 }
 
 D_MOBILE *load_player(char *player)
@@ -191,40 +174,4 @@ D_MOBILE *load_profile(char *player)
 
   fclose(fp);
   return dMob;
-}
-
-
-/*
- * This file stores only data vital to load
- * the character, and check for things like
- * password and other such data.
- */
-void save_profile(D_MOBILE *dMob)
-{
-  char pfile[MAX_BUFFER];
-  char pName[MAX_BUFFER];
-  FILE *fp;
-  int size, i;
-
-  pName[0] = toupper(dMob->name[0]);
-  size = strlen(dMob->name);
-  for (i = 1; i < size && i < MAX_BUFFER - 1; i++)
-    pName[i] = tolower(dMob->name[i]);
-  pName[i] = '\0';
-
-  /* open the pfile so we can write to it */
-  snprintf(pfile, MAX_BUFFER, "../players/%s.profile", pName);
-  if ((fp = fopen(pfile, "w")) == NULL)
-  {
-    bug("Unable to write to %s's pfile", dMob->name);
-    return;
-  }
-
-  /* dump the players data into the file */
-  fprintf(fp, "Name           %s~\n", dMob->name);
-  fprintf(fp, "Password       %s~\n", dMob->password);
-
-  /* terminate the file */
-  fprintf(fp, "%s\n", FILE_TERMINATOR);
-  fclose(fp);
 }

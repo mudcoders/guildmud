@@ -151,7 +151,7 @@ struct help_data
 struct lookup_data
 {
   D_SOCKET       * dsock;   /* the socket we wish to do a hostlookup on */
-  struct sockaddr    *sa;   
+  struct sockaddr    *sa;
 };
 
 struct typCmd
@@ -321,8 +321,9 @@ D_M  *load_profile            ( char *player );
 /*
  * db.c
  */
-void  open_database           ( void );
-void  close_database          ( void );
+bool  db_open                 ( void );
+bool  db_close                ( void );
+bool  db_execute              ( const char *sql, ... );
 
 /*******************************
  * End of prototype declartion *
