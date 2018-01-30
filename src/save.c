@@ -35,6 +35,7 @@ void save_player(D_MOBILE *dMob)
 D_MOBILE *load_player(char *player)
 {
   D_MOBILE *dMob = NULL;
+  sqlite3_stmt *stmt;
 
   /* create new mobile data */
   if (StackSize(dmobile_free) <= 0)
@@ -57,7 +58,7 @@ D_MOBILE *load_player(char *player)
     abort();
   }
 
-  sqlite3_stmt *stmt = db_prepare("SELECT name, password, level FROM players WHERE name = %s", player);
+  stmt = db_prepare("SELECT name, password, level FROM players WHERE name = %s", player);
 
   if ( stmt == NULL )
   {
@@ -89,6 +90,7 @@ D_MOBILE *load_player(char *player)
 D_MOBILE *load_profile(char *player)
 {
   D_MOBILE *dMob = NULL;
+  sqlite3_stmt *stmt;
 
   /* create new mobile data */
   if (StackSize(dmobile_free) <= 0)
@@ -111,7 +113,7 @@ D_MOBILE *load_profile(char *player)
     abort();
   }
 
-  sqlite3_stmt *stmt = db_prepare("SELECT name, password FROM players WHERE name = %s", player);
+  stmt = db_prepare("SELECT name, password FROM players WHERE name = %s", player);
 
   if ( stmt == NULL )
   {

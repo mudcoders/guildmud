@@ -39,10 +39,11 @@ bool db_close()
 bool db_execute(const char *sql, ...)
 {
   va_list vars;
+  sqlite3_stmt *stmt;
 
   va_start(vars, sql);
 
-  sqlite3_stmt *stmt = db_prepare_internal(sql, vars);
+  stmt = db_prepare_internal(sql, vars);
 
   if ( stmt == NULL ) {
     return FALSE;
@@ -68,10 +69,11 @@ bool db_execute(const char *sql, ...)
 sqlite3_stmt *db_prepare(const char *sql, ...)
 {
   va_list vars;
+  sqlite3_stmt *stmt;
 
   va_start(vars, sql);
 
-  sqlite3_stmt *stmt = db_prepare_internal(sql, vars);
+  stmt = db_prepare_internal(sql, vars);
 
   va_end(vars);
 
@@ -90,21 +92,22 @@ sqlite3_stmt *db_prepare_internal(const char *sql, va_list vars)
 {
   sqlite3_stmt *stmt;
   int index = 1;
+  int i;
 
   char* buffer = (char*) malloc( (strlen(sql) + 1) * sizeof(char) );
   memcpy( buffer, sql, strlen(sql) + 1 );
 
-  // convert the query into an appropriate prepared statement
-  for ( int i = 0; buffer[i] != '\0'; i++ )
+  /* convert the query into an appropriate prepared statement */
+  for ( i = 0; buffer[i] != '\0'; i++ )
   {
-    // convert %% into % for LIKE statements
+    /* convert %% into % for LIKE statements */
     if ( buffer[i] == '%' && buffer[i + 1] == '%' )
     {
         buffer[i + 1] = ' ';
         continue;
     }
 
-    // replace % with ?
+    /* replace % with ? */
     if ( buffer[i] == '%' )
     {
         buffer[i] = '?';
@@ -120,18 +123,18 @@ sqlite3_stmt *db_prepare_internal(const char *sql, va_list vars)
     return NULL;
   }
 
-  // re-iterate through the query and bind relevant values
-  for ( int i = 0; sql[i] != '\0'; i++ )
+  /* re-iterate through the query and bind relevant values */
+  for ( i = 0; sql[i] != '\0'; i++ )
   {
-    // % symbol
+    /* % symbol */
     if ( sql[i] == '%' && sql[i + 1] == '%' )
     {
-      // skip the next %
+      /* skip the next % */
       i++;
       continue;
     }
 
-    // int
+    /* int */
     if ( sql[i] == '%' && sql[i + 1] == 'i' )
     {
       sqlite3_bind_int( stmt, index, va_arg( vars, int ) );
@@ -139,7 +142,7 @@ sqlite3_stmt *db_prepare_internal(const char *sql, va_list vars)
       continue;
     }
 
-    // string
+    /* string */
     if ( sql[i] == '%' && sql[i + 1] == 's' )
     {
       sqlite3_bind_text( stmt, index, va_arg( vars, char* ), -1, NULL );
@@ -147,7 +150,7 @@ sqlite3_stmt *db_prepare_internal(const char *sql, va_list vars)
       continue;
     }
 
-    // float
+    /* float */
     if ( sql[i] == '%' && sql[i + 1] == 'f' )
     {
       sqlite3_bind_double( stmt, index, (double)va_arg( vars, double ) );
