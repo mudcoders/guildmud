@@ -321,9 +321,12 @@ D_M  *load_profile            ( char *player );
 /*
  * db.c
  */
-bool  db_open                 ( void );
-bool  db_close                ( void );
-bool  db_execute              ( const char *sql, ... );
+bool           db_open        ( void );
+bool           db_close       ( void );
+bool           db_execute     ( const char *sql, ... );
+sqlite3_stmt  *db_prepare     (const char *sql, ...);
+int            db_step        (sqlite3_stmt *stmt);
+int            db_finalize    (sqlite3_stmt *stmt);
 
 /*******************************
  * End of prototype declartion *

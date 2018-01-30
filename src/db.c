@@ -8,6 +8,8 @@
 
 sqlite3     *  db;
 
+sqlite3_stmt *db_prepare_internal(const char *sql, va_list vars);
+
 bool db_open()
 {
   if (sqlite3_open(DATABASE_FILE, &db) != SQLITE_OK)
@@ -36,8 +38,57 @@ bool db_close()
 
 bool db_execute(const char *sql, ...)
 {
-  sqlite3_stmt *stmt;
   va_list vars;
+
+  va_start(vars, sql);
+
+  sqlite3_stmt *stmt = db_prepare_internal(sql, vars);
+
+  if ( stmt == NULL ) {
+    return FALSE;
+  }
+
+  va_end(vars);
+
+  if ( db_step(stmt) != SQLITE_DONE ) {
+    bug("Failed to step through statement: %s", sqlite3_errmsg(db));
+
+    return FALSE;
+  }
+
+  if ( db_finalize(stmt) != SQLITE_OK ) {
+    bug("Failed to finalize statement: %s", sqlite3_errmsg(db));
+
+    return FALSE;
+  }
+
+  return TRUE;
+}
+
+sqlite3_stmt *db_prepare(const char *sql, ...)
+{
+  va_list vars;
+
+  va_start(vars, sql);
+
+  sqlite3_stmt *stmt = db_prepare_internal(sql, vars);
+
+  va_end(vars);
+
+  return stmt;
+}
+
+int db_step(sqlite3_stmt *stmt) {
+  return sqlite3_step( stmt );
+}
+
+int db_finalize(sqlite3_stmt *stmt) {
+  return sqlite3_finalize( stmt );
+}
+
+sqlite3_stmt *db_prepare_internal(const char *sql, va_list vars)
+{
+  sqlite3_stmt *stmt;
   int index = 1;
 
   char* buffer = (char*) malloc( (strlen(sql) + 1) * sizeof(char) );
@@ -66,10 +117,8 @@ bool db_execute(const char *sql, ...)
     bug("Failed to prepare SQL statement (%s): %s", buffer, sqlite3_errmsg(db));
     free( buffer );
 
-    return FALSE;
+    return NULL;
   }
-
-  va_start(vars, sql);
 
   // re-iterate through the query and bind relevant values
   for ( int i = 0; sql[i] != '\0'; i++ )
@@ -112,22 +161,7 @@ bool db_execute(const char *sql, ...)
     }
   }
 
-  va_end(vars);
-
   free( buffer );
 
-  if (sqlite3_step( stmt ) != SQLITE_DONE )
-  {
-    bug("Unable to step through statement (%s): %s", buffer, sqlite3_errmsg(db));
-
-    return FALSE;
-  }
-
-  if ( sqlite3_finalize( stmt ) != SQLITE_OK ) {
-    bug("Unable to destroy prepared statement (%s): %s", buffer, sqlite3_errmsg(db));
-
-    return FALSE;
-  }
-
-  return TRUE;
+  return stmt;
 }
