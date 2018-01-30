@@ -217,7 +217,9 @@ D_MOBILE *check_reconnect(char *player)
     if (!strcasecmp(dMob->name, player))
     {
       if (dMob->socket)
+      {
         close_socket(dMob->socket, TRUE);
+      }
 
       break;
     }
