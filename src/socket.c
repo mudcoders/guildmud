@@ -93,7 +93,7 @@ int main(int argc, char **argv)
   return 0;
 }
 
-void GameLoop(int control)   
+void GameLoop(int control)
 {
   D_SOCKET *dsock;
   ITERATOR Iter;
@@ -262,7 +262,7 @@ int init_socket()
   {
     perror("Error in setsockopt()");
     exit(1);
-  } 
+  }
 
   /* bind the port */
   bind(sockfd, (struct sockaddr *) &my_addr, sizeof(struct sockaddr));
@@ -274,7 +274,7 @@ int init_socket()
   return sockfd;
 }
 
-/* 
+/*
  * New_socket()
  *
  * Initializes a new socket, get's the hostname
@@ -291,7 +291,7 @@ bool new_socket(int sock)
   socklen_t            size;
 
   /* initialize threads */
-  pthread_attr_init(&attr);   
+  pthread_attr_init(&attr);
   pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 
   /*
@@ -410,7 +410,7 @@ void close_socket(D_SOCKET *dsock, bool reconnect)
   dsock->state = STATE_CLOSED;
 }
 
-/* 
+/*
  * Read_from_socket()
  *
  * Reads one line from the socket, storing it
@@ -456,7 +456,7 @@ bool read_from_socket(D_SOCKET *dsock)
     {
       perror("Read_from_socket");
       return FALSE;
-    }     
+    }
   }
   dsock->inbuf[size] = '\0';
   return TRUE;
@@ -648,7 +648,7 @@ void text_to_buffer(D_SOCKET *dsock, const char *txt)
         {
           txt++;
           if (last != -1 || underline || bold)
-          {  
+          {
             underline = FALSE;
             bold = FALSE;
             output[iPtr++] =  27; output[iPtr++] = '[';
@@ -728,7 +728,7 @@ void text_to_buffer(D_SOCKET *dsock, const char *txt)
           else
             txt++;
         }
-        break;   
+        break;
     }
   }
 
@@ -942,11 +942,11 @@ void handle_new_connections(D_SOCKET *dsock, char *arg)
 
       for (i = 0; dsock->player->password[i] != '\0'; i++)
       {
-	if (dsock->player->password[i] == '~')
-	{
-	  text_to_buffer(dsock, "Illegal password!\n\rPlease enter a new password: ");
-	  return;
-	}
+        if (dsock->player->password[i] == '~')
+        {
+          text_to_buffer(dsock, "Illegal password!\n\rPlease enter a new password: ");
+          return;
+        }
       }
 
       text_to_buffer(dsock, "Please verify the password: ");
@@ -1024,11 +1024,11 @@ void handle_new_connections(D_SOCKET *dsock, char *arg)
           dsock->state = STATE_PLAYING;
           text_to_buffer(dsock, motd);
 
-	  /* initialize events on the player */
-	  init_events_player(dsock->player);
+          /* initialize events on the player */
+          init_events_player(dsock->player);
 
-	  /* strip the idle event from this socket */
-	  strip_event_socket(dsock, EVENT_SOCKET_IDLE);
+          /* strip the idle event from this socket */
+          strip_event_socket(dsock, EVENT_SOCKET_IDLE);
         }
       }
       else

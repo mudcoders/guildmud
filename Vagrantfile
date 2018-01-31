@@ -29,6 +29,7 @@ Vagrant.configure("2") do |config|
   # install packages
   config.vm.provision "shell", path: "vagrant/provisioners/home.sh"
   config.vm.provision "shell", path: "vagrant/provisioners/c.sh"
+  config.vm.provision "shell", path: "vagrant/provisioners/sqlite.sh"
 
   # make /vagrant the working directory for all commands
   config.exec.commands '*', directory: '/vagrant'

@@ -8,6 +8,7 @@
 #include <zlib.h>
 #include <pthread.h>
 #include <arpa/telnet.h>
+#include <sqlite3.h>
 
 #include "list.h"
 #include "stack.h"
@@ -34,8 +35,9 @@
 #define MAX_HELP_ENTRY     4096                   /* roughly 40 lines of blocktext      */
 #define MUDPORT            9009                   /* just set whatever port you want    */
 #define FILE_TERMINATOR    "EOF"                  /* end of file marker                 */
-#define COPYOVER_FILE      "../txt/copyover.dat"  /* tempfile to store copyover data    */
+#define COPYOVER_FILE      "../data/copyover.dat" /* tempfile to store copyover data    */
 #define EXE_FILE           "../src/guildmud"      /* the name of the mud binary         */
+#define DATABASE_FILE      "../data/guildmud.db"  /* sqlite3 database file              */
 
 /* Connection states */
 #define STATE_NEW_NAME         0
@@ -149,7 +151,7 @@ struct help_data
 struct lookup_data
 {
   D_SOCKET       * dsock;   /* the socket we wish to do a hostlookup on */
-  struct sockaddr    *sa;   
+  struct sockaddr    *sa;
 };
 
 struct typCmd
@@ -188,6 +190,7 @@ extern  char        *   greeting;         /* the welcome greeting               
 extern  char        *   motd;             /* the MOTD help file                 */
 extern  int             control;          /* boot control socket thingy         */
 extern  time_t          current_time;     /* let's cut down on calls to time()  */
+extern  sqlite3     *   db;               /* let's start with a canonical db    */
 
 /***************************
  * End of Global Variables *
@@ -314,6 +317,16 @@ bool  compressEnd             ( D_S *dsock, unsigned char teleopt, bool forced )
 void  save_player             ( D_M *dMob );
 D_M  *load_player             ( char *player );
 D_M  *load_profile            ( char *player );
+
+/*
+ * db.c
+ */
+bool           db_open        ( void );
+bool           db_close       ( void );
+bool           db_execute     ( const char *sql, ... );
+sqlite3_stmt  *db_prepare     (const char *sql, ...);
+int            db_step        (sqlite3_stmt *stmt);
+int            db_finalize    (sqlite3_stmt *stmt);
 
 /*******************************
  * End of prototype declartion *
