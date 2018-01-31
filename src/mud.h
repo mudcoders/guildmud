@@ -327,6 +327,7 @@ bool           db_execute     ( const char *sql, ... );
 sqlite3_stmt  *db_prepare     (const char *sql, ...);
 int            db_step        (sqlite3_stmt *stmt);
 int            db_finalize    (sqlite3_stmt *stmt);
+void           db_migrate     ( void );
 
 /*******************************
  * End of prototype declartion *

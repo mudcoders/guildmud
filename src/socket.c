@@ -60,6 +60,9 @@ int main(int argc, char **argv)
   /* note that we are booting up */
   log_string("Program starting.");
 
+  /* first and foremost, run the migrations */
+  db_migrate();
+
   /* initialize the event queue - part 1 */
   init_event_queue(1);
 
