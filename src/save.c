@@ -19,11 +19,6 @@ void save_player(D_MOBILE *dMob)
     return;
   }
 
-  if ( !db_execute("CREATE TABLE IF NOT EXISTS players (id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE, password TEXT NOT NULL, level INTEGER)") )
-  {
-    return;
-  }
-
   if ( !db_execute("INSERT INTO players (name, password, level) VALUES (%s, %s, %i)", dMob->name, dMob->password, dMob->level) )
   {
     return;

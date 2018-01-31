@@ -168,3 +168,22 @@ sqlite3_stmt *db_prepare_internal(const char *sql, va_list vars)
 
   return stmt;
 }
+
+void db_migrate()
+{
+
+  if ( !db_open() )
+  {
+    abort();
+  }
+
+  /* players table */
+  if ( !db_execute("CREATE TABLE IF NOT EXISTS players (id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE, password TEXT NOT NULL, level INTEGER)") )
+  {
+    abort();
+  }
+
+  db_close();
+
+  return;
+}
