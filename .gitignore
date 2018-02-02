@@ -1,5 +1,6 @@
 .vagrant
 *.o
 guildmud
-tasks.json
+.vscode/tasks.json
 *.log
+.vscode/settings.json

@@ -2,7 +2,7 @@ CC      = gcc
 C_FLAGS = -Wall -g -pedantic -Werror
 L_FLAGS = -lz -lpthread -lsqlite3
 
-O_FILES = socket.o io.o strings.o utils.o interpret.o help.o  \
+O_FILES = main.o socket.o io.o strings.o utils.o interpret.o help.o  \
 	  action_safe.o mccp.o save.o event.o event-handler.o \
 	  list.o stack.o crypt.o db.o
 
