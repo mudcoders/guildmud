@@ -240,6 +240,7 @@ void  handle_new_connections  ( D_S *dsock, char *arg );
 void  clear_socket            ( D_S *sock_new, int sock );
 void  recycle_sockets         ( void );
 void *lookup_address          ( void *arg );
+void GameLoop                 ( int control );
 
 /*
  * interpret.c
