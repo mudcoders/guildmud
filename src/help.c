@@ -106,7 +106,11 @@ void load_helps()
 
   help_list = AllocList();
 
-  directory = opendir("../help/");
+  if((directory = opendir("../help/")) == NULL)
+  {
+    bug("Failed to open help directory");
+    abort();   
+  }
   for (entry = readdir(directory); entry; entry = readdir(directory))
   {
     if (!strcmp(entry->d_name, ".") || !strcmp(entry->d_name, ".."))
