@@ -5,3 +5,4 @@ guildmud
 *.log
 .vscode/settings.json
 src/libguildmud.a
+tests/*.run
