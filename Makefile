@@ -1,7 +1,7 @@
 CC      = gcc
-C_FLAGS = -Wall -pedantic -Werror
+C_FLAGS = -Wall -pedantic -Werror -g
 L_FLAGS = -lz -lpthread -lsqlite3
-C_FLAGS_TEST = -Wall -pedantic -Werror -Isrc/
+C_FLAGS_TEST = -Wall -pedantic -Werror -g -Isrc/
 L_FLAGS_TEST = -lz -lpthread -lsqlite3 -lcheck -Lsrc/
 
 SRC_FILES = $(wildcard src/*.c)
