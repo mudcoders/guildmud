@@ -101,7 +101,7 @@ EVENT_DATA *alloc_event()
   EVENT_DATA *event;
 
   if (StackSize(event_free) <= 0)
-    event = malloc(sizeof(*event));
+    event = (EVENT_DATA *) malloc(sizeof(*event));
   else
     event = (EVENT_DATA *) PopStack(event_free);
 

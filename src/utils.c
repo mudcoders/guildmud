@@ -162,7 +162,7 @@ void copyover_recover()
     if (desc == -1)
       break;
 
-    dsock = malloc(sizeof(*dsock));
+    dsock = (D_SOCKET *) malloc(sizeof(*dsock));
     clear_socket(dsock, desc);
 
     dsock->hostname     =  strdup(host);
