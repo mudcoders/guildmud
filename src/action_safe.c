@@ -156,7 +156,7 @@ void cmd_copyover(D_MOBILE *dMob, char *arg)
     return;
   }
 
-  strncpy(buf, "\n\r <*>            The world starts spinning             <*>\n\r", MAX_BUFFER);
+  snprintf(buf, sizeof(buf), "%s", "\n\r <*>            The world starts spinning             <*>\n\r");
 
   /* For each playing descriptor, save its state */
   AttachIterator(&Iter, dsock_list);
