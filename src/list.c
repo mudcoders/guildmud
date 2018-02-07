@@ -16,7 +16,7 @@ LIST *AllocList()
 {
   LIST *pList;
 
-  pList = malloc(sizeof(*pList));
+  pList = (LIST *) malloc(sizeof(*pList));
   pList->_pFirstCell = NULL;
   pList->_pLastCell = NULL;
   pList->_iterators = 0;
@@ -43,7 +43,7 @@ CELL *AllocCell()
 {
   CELL *pCell;
 
-  pCell = malloc(sizeof(*pCell));
+  pCell = (CELL *) malloc(sizeof(*pCell));
   pCell->_pNextCell = NULL;
   pCell->_pPrevCell = NULL;
   pCell->_pContent = NULL;

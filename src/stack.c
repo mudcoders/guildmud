@@ -26,7 +26,7 @@ STACK *AllocStack()
 {
   STACK *pStack;
 
-  pStack = malloc(sizeof(*pStack));
+  pStack = (STACK *) malloc(sizeof(*pStack));
   pStack->_pCells = NULL;
   pStack->_iSize = 0;
 
@@ -68,7 +68,7 @@ void PushStack(void *pContent, STACK *pStack)
 {
   SCELL *pCell;
 
-  pCell = malloc(sizeof(*pCell));
+  pCell = (SCELL *) malloc(sizeof(*pCell));
   pCell->_pNext = pStack->_pCells;
   pCell->_pContent = pContent;
   pStack->_pCells = pCell;

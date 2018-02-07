@@ -248,7 +248,7 @@ bool new_socket(int sock)
    */
   if (StackSize(dsock_free) <= 0)
   {
-    if ((sock_new = malloc(sizeof(*sock_new))) == NULL)
+    if ((sock_new = (D_SOCKET*) malloc(sizeof(*sock_new))) == NULL)
     {
       bug("New_socket: Cannot allocate memory for socket.");
       abort();
@@ -286,7 +286,7 @@ bool new_socket(int sock)
     if (strcasecmp(sock_new->hostname, "127.0.0.1"))
     {
       /* allocate some memory for the lookup data */
-      if ((lData = malloc(sizeof(*lData))) == NULL)
+      if ((lData = (LOOKUP_DATA *) malloc(sizeof(*lData))) == NULL)
       {
         bug("New_socket: Cannot allocate memory for lookup data.");
         abort();
@@ -847,7 +847,7 @@ void handle_new_connections(D_SOCKET *dsock, char *arg)
       {
         if (StackSize(dmobile_free) <= 0)
         {
-          if ((p_new = malloc(sizeof(*p_new))) == NULL)
+          if ((p_new = (D_MOBILE *) malloc(sizeof(*p_new))) == NULL)
           {
             bug("Handle_new_connection: Cannot allocate memory.");
             abort();

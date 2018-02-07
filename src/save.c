@@ -35,7 +35,7 @@ D_MOBILE *load_player(char *player)
   /* create new mobile data */
   if (StackSize(dmobile_free) <= 0)
   {
-    if ((dMob = malloc(sizeof(*dMob))) == NULL)
+    if ((dMob = (D_MOBILE *) malloc(sizeof(*dMob))) == NULL)
     {
       bug("Load_player: Cannot allocate memory.");
       abort();
@@ -90,7 +90,7 @@ D_MOBILE *load_profile(char *player)
   /* create new mobile data */
   if (StackSize(dmobile_free) <= 0)
   {
-    if ((dMob = malloc(sizeof(*dMob))) == NULL)
+    if ((dMob = (D_MOBILE *) malloc(sizeof(*dMob))) == NULL)
     {
       bug("Load_player: Cannot allocate memory.");
       abort();
