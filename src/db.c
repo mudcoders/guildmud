@@ -45,11 +45,12 @@ bool db_execute(const char *sql, ...)
 
   stmt = db_prepare_internal(sql, vars);
 
+  va_end(vars);
+
   if ( stmt == NULL ) {
     return FALSE;
   }
 
-  va_end(vars);
 
   if ( db_step(stmt) != SQLITE_DONE ) {
     bug("Failed to step through statement: %s", sqlite3_errmsg(db));
