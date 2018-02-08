@@ -90,9 +90,9 @@ BUFFER *__buffer_new(int size)
 {
   BUFFER *buffer;
     
-  buffer = malloc(sizeof(BUFFER));
+  buffer = (BUFFER *) malloc(sizeof(BUFFER));
   buffer->size = size;
-  buffer->data = malloc(size);
+  buffer->data = (char *) malloc(size);
   buffer->len = 0;
   return buffer;
 }
@@ -122,7 +122,7 @@ void __buffer_strcat(BUFFER *buffer, const char *text)
     new_size = buffer->size + text_len + 1;
    
     /* Allocate the new buffer */
-    new_data = malloc(new_size);
+    new_data = (char *) malloc(new_size);
   
     /* Copy the current buffer to the new buffer */
     memcpy(new_data, buffer->data, buffer->len);

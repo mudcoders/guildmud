@@ -73,7 +73,7 @@ bool check_help(D_MOBILE *dMob, char *helpfile)
       return FALSE;
     else
     {
-      if ((pHelp = malloc(sizeof(*pHelp))) == NULL)
+      if ((pHelp = (HELP_DATA *) malloc(sizeof(*pHelp))) == NULL)
       { 
         bug("Check_help: Cannot allocate memory.");
         abort();
@@ -125,7 +125,7 @@ void load_helps()
       continue;
     }
 
-    if ((new_help = malloc(sizeof(*new_help))) == NULL)
+    if ((new_help = (HELP_DATA *) malloc(sizeof(*new_help))) == NULL)
     {
       bug("Load_helps: Cannot allocate memory.");
       abort();
