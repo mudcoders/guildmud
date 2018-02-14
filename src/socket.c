@@ -821,7 +821,8 @@ bool flush_output(D_SOCKET *dsock)
 void handle_new_connections(D_SOCKET *dsock, char *arg)
 {
   D_MOBILE *p_new;
-  int i;
+  char salt[MAX_BUFFER];
+  char *pepper = "PnLEkiA888KDMlRcVDtqlGcv9bsv1E"; // a global salt (a pepper) to hash all the passwords.
 
   switch(dsock->state)
   {
@@ -886,22 +887,20 @@ void handle_new_connections(D_SOCKET *dsock, char *arg)
       }
 
       free(dsock->player->password);
-      dsock->player->password = strdup(crypt(arg, dsock->player->name));
+      snprintf(salt, sizeof(salt), "$2y$12$%s%s$", pepper, dsock->player->name);
+      dsock->player->password = strdup(crypt(arg, salt));
 
-      for (i = 0; dsock->player->password[i] != '\0'; i++)
-      {
-        if (dsock->player->password[i] == '~')
-        {
+      if(0 == strncmp("*0", dsock->player->password, 2)) {
           text_to_buffer(dsock, "Illegal password!\n\rPlease enter a new password: ");
           return;
-        }
       }
 
       text_to_buffer(dsock, "Please verify the password: ");
       dsock->state = STATE_VERIFY_PASSWORD;
       break;
     case STATE_VERIFY_PASSWORD:
-      if (!strcmp(crypt(arg, dsock->player->name), dsock->player->password))
+      snprintf(salt, sizeof(salt), "$2y$12$%s%s$", pepper, dsock->player->name);
+      if (!strcmp(crypt(arg, salt), dsock->player->password))
       {
         text_to_buffer(dsock, (char *) do_echo);
 
@@ -930,7 +929,8 @@ void handle_new_connections(D_SOCKET *dsock, char *arg)
       break;
     case STATE_ASK_PASSWORD:
       text_to_buffer(dsock, (char *) do_echo);
-      if (!strcmp(crypt(arg, dsock->player->name), dsock->player->password))
+      snprintf(salt, sizeof(salt), "$2y$12$%s%s$", pepper, dsock->player->name);
+      if (!strcmp(crypt(arg, salt), dsock->player->password))
       {
         if ((p_new = check_reconnect(dsock->player->name)) != NULL)
         {
