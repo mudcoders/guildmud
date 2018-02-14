@@ -22,3 +22,4 @@
 
 #test bcrypt_test
     ck_assert_str_eq("$2y$12$usesomesillystringforeK4UQKqQz32k32guri03ARP4/qWtPveG", crypt("guildmud", "$2y$12$usesomesillystringforsalt$"));
+    ck_assert_str_ne("$2y$12$usesomesillystringforeK4UQKqQz32k32guri03ARP4/qWtPve", crypt("guildmud", "$2y$12$usesomesillystringforsalt$"));
