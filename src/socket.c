@@ -822,7 +822,7 @@ void handle_new_connections(D_SOCKET *dsock, char *arg)
 {
   D_MOBILE *p_new;
   char salt[MAX_BUFFER];
-  char *pepper = "PnLEkiA888KDMlRcVDtqlGcv9bsv1E"; // a global salt (a pepper) to hash all the passwords.
+  char *pepper = "PnLEkiA888KDMlRcVDtqlGcv9bsv1E"; /* a global salt (a pepper) to hash all the passwords. */
 
   switch(dsock->state)
   {
