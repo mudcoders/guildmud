@@ -12,7 +12,7 @@
 
 #include "list.h"
 #include "stack.h"
-#include "ow-crypt.h"
+#include "crypt_blowfish-1.3-mini/ow-crypt.h"
 
 /************************
  * Standard definitions *
