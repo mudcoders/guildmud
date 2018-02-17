@@ -1,0 +1,87 @@
+#include <string.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <ctype.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include <check.h>
+
+#include "mud.h"
+
+#suite stack_c
+#tcase basic_stack_operations
+
+#test one_element_test
+    STACK *stack = AllocStack();
+    ck_assert_int_eq(0, StackSize(stack));
+    PushStack("one", stack);
+    ck_assert_int_eq(1, StackSize(stack));
+    ck_assert_str_eq("one", PopStack(stack));
+    ck_assert_int_eq(0, StackSize(stack));
+    FreeStack(stack);
+
+#test n_element_test_insertion
+    time_t t;
+    srand((unsigned) time(&t));
+    const int num_elems = rand() % 100;
+    STACK *stack = AllocStack();
+    ck_assert_int_eq(0, StackSize(stack));
+    for(int i = 0; i < num_elems; i++) {
+        ck_assert_int_eq(i, StackSize(stack));
+        char *str = alloca(5);
+        snprintf(str, 4, "%d", i);
+        PushStack(str, stack);
+    }
+    ck_assert_int_eq(num_elems, StackSize(stack));
+    FreeStack(stack);
+
+#test n_element_test_insertion_and_removal
+
+    /* Generate how many cycles we want to test insertion/removal (up to 100) */
+
+    time_t t;
+    srand((unsigned) time(&t));
+    const int num_elems = rand() % 100;
+
+    /* Create stack and check is empty */
+
+    STACK *stack = AllocStack();
+    ck_assert_int_eq(0, StackSize(stack));
+
+    /* insert num_elems in the stack as malloc'ed integers */
+    /* we do this malloc thing so they've different mem addresses */
+    /* if we add the &i directly, they stay in the same mem address */
+    /* and the stack lib things they're the same number */
+    /* it checks addresses, not content */
+
+    for(int i = 0; i < num_elems; i++) {
+        ck_assert_int_eq(i, StackSize(stack));
+        char *str = malloc(5);
+        snprintf(str, 4, "%d", i);
+        PushStack(str, stack);
+    }
+    
+    /* assert we loaded all the numbers */
+
+    ck_assert_int_eq(num_elems, StackSize(stack));
+
+    /* Create an iterator and count down */
+    /* removing the content and freeing the malloc'ed value */
+
+    int j = num_elems;
+    while (0 != StackSize(stack)) {
+        /* Pop from stack and free malloc'ed contect */
+        free(PopStack(stack));
+        /* free malloc'ed integer */
+        /* decrement the number of remaining elements in the stack */
+        j--;
+    }
+
+    /* assert we pop'd everything and size of stack == 0 */
+
+    ck_assert_int_eq(j, 0);
+    ck_assert_int_eq(0, StackSize(stack));
+
+    /* free the stack, we don't want mem leaks here, punk! */
+
+    FreeStack(stack);
