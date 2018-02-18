@@ -4,5 +4,7 @@ guildmud
 .vscode/tasks.json
 *.log
 .vscode/settings.json
-src/libguildmud.a
-tests/*.run
+libguildmud.a
+libblowfish-1.3.a
+*.run
+Info.plist

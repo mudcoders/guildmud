@@ -12,6 +12,7 @@
 
 #include "list.h"
 #include "stack.h"
+#include "crypt_blowfish-1.3-mini/ow-crypt.h"
 
 /************************
  * Standard definitions *
@@ -221,8 +222,6 @@ extern const unsigned char compress_will2[];
 
 #define  buffer_new(size)             __buffer_new     ( size)
 #define  buffer_strcat(buffer,text)   __buffer_strcat  ( buffer, text )
-
-char  *crypt                  ( const char *key, const char *salt );
 
 /*
  * socket.c
