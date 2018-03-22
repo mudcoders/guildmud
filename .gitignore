@@ -8,3 +8,5 @@ libguildmud.a
 libblowfish-1.3.a
 *.run
 Info.plist
+/tags
+/.vimrc

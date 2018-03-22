@@ -33,6 +33,7 @@ const unsigned char compress_will   [] = { IAC, WILL, TELOPT_COMPRESS,  '\0' };
 const unsigned char compress_will2  [] = { IAC, WILL, TELOPT_COMPRESS2, '\0' };
 const unsigned char do_echo         [] = { IAC, WONT, TELOPT_ECHO,      '\0' };
 const unsigned char dont_echo       [] = { IAC, WILL, TELOPT_ECHO,      '\0' };
+const unsigned char gmcp_will       [] = { IAC, WILL, TELOPT_GMCP,      '\0' };
 
 /* local procedures */
 void GameLoop         ( int control );
@@ -305,6 +306,7 @@ bool new_socket(int sock)
   /* negotiate compression */
   text_to_buffer(sock_new, (char *) compress_will2);
   text_to_buffer(sock_new, (char *) compress_will);
+  text_to_buffer(sock_new, (char *) gmcp_will);
 
   /* send the greeting */
   text_to_buffer(sock_new, greeting);
@@ -718,6 +720,7 @@ void text_to_mobile(D_MOBILE *dMob, const char *txt)
 void next_cmd_from_buffer(D_SOCKET *dsock)
 {
   int size = 0, i = 0, j = 0, telopt = 0;
+  bool gmcp = FALSE;
 
   /* if theres already a command ready, we return */
   if (dsock->next_command[0] != '\0')
@@ -742,9 +745,20 @@ void next_cmd_from_buffer(D_SOCKET *dsock)
     {
       telopt = 1;
     }
-    else if (telopt == 1 && (dsock->inbuf[i] == (signed char) DO || dsock->inbuf[i] == (signed char) DONT))
+    else if (telopt == 1
+             && (dsock->inbuf[i] == (signed char) DO
+                 || dsock->inbuf[i] == (signed char) DONT
+                 || dsock->inbuf[i] == (signed char) SB))
     {
       telopt = 2;
+    }
+    else if (telopt == 1 && gmcp && dsock->inbuf[i] == (signed char) SE)
+    {
+      telopt = 0;
+      gmcp = FALSE;
+      dsock->next_command[j] = '\0';
+      gmcpReceived(dsock);
+      dsock->next_command[j = 0] = '\0';
     }
     else if (telopt == 2)
     {
@@ -763,6 +777,14 @@ void next_cmd_from_buffer(D_SOCKET *dsock)
           compressStart(dsock, TELOPT_COMPRESS2);
         else if (dsock->inbuf[i-1] == (signed char) DONT)           /* stop compressing    */
           compressEnd(dsock, TELOPT_COMPRESS2, FALSE);
+      }
+      else if (dsock->inbuf[i] == (signed char) TELOPT_GMCP)        /* check for gmcp */
+      {
+        if (dsock->inbuf[i-1] == (signed char) DO)
+          gmcpEnable(dsock);
+        else if (dsock->inbuf[i-1] == (signed char) SB) {
+          gmcp = TRUE;
+        }
       }
     }
     else if (isprint(dsock->inbuf[i]) && isascii(dsock->inbuf[i]))
@@ -1000,6 +1022,7 @@ void clear_socket(D_SOCKET *sock_new, int sock)
   sock_new->player         =  NULL;
   sock_new->top_output     =  0;
   sock_new->events         =  AllocList();
+  sock_new->gmcp_enabled   =  FALSE;
 }
 
 /* does the lookup, changes the hostname, and dies */
