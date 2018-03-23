@@ -1,4 +1,4 @@
 #!/bin/bash
 
-apt-get update
-apt-get install check
+apt-get update -y
+apt-get install -y check
