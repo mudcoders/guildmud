@@ -173,15 +173,3 @@ int bprintf(BUFFER *buffer, char *fmt, ...)
    
   return res;
 }
-
-char *strdup(const char *s)
-{
-  char *pstr;
-  int len;
-
-  len = strlen(s) + 1;
-  pstr = (char *) calloc(1, len);
-  strcpy(pstr, s);
-
-  return pstr;
-}
