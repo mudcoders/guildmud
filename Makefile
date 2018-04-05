@@ -21,12 +21,11 @@ src/libguildmud.a: $(OBJ_FILES)
 
 
 test: $(CHECK_FILES_EXE)
-	@echo Compiling tests...
-	
+	@find tests/ -depth 1 -name '*.run' -exec {} \;
 
-tests/%.run: tests/%.c src/libguildmud.a
+
+tests/%.run: tests/%.c src/libguildmud.a src/crypt_blowfish-1.3-mini/libblowfish-1.3.a
 	@$(CC) -o $@ $< src/libguildmud.a src/crypt_blowfish-1.3-mini/libblowfish-1.3.a $(C_FLAGS_TEST) $(L_FLAGS_TEST) 
-	# $@ -- Uncomment if we want to run the compiled test
 
 tests/%.c: tests/%.test
 	@checkmk $< > $@
