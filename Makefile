@@ -1,8 +1,16 @@
 CC      = gcc
 C_FLAGS = -Wall -pedantic -Werror -g
 L_FLAGS = -lz -lpthread -lsqlite3
-C_FLAGS_TEST = -Wall -pedantic -Werror -g -Isrc/
-L_FLAGS_TEST = -lz -lpthread -lsqlite3 -lcheck -Lsrc/
+C_FLAGS_TEST = -Wall -pedantic -Werror -g
+L_FLAGS_TEST = -lz -lcheck -lpthread -lsqlite3
+
+# os-dependent flags
+
+UNAME := $(shell uname)
+
+ifeq ($(UNAME),Linux)
+	L_FLAGS_TEST += -lsubunit -lrt -lm
+endif
 
 SRC_FILES = $(wildcard src/*.c)
 OBJ_FILES = $(filter-out src/main.o, $(SRC_FILES:.c=.o))
@@ -21,11 +29,10 @@ src/libguildmud.a: $(OBJ_FILES)
 
 
 test: $(CHECK_FILES_EXE)
-	@find tests/ -depth 1 -name '*.run' -exec {} \;
-	
+	@find tests/ -maxdepth 1 -name '*.run' -exec {} \;
 
 tests/%.run: tests/%.c src/libguildmud.a src/crypt_blowfish-1.3-mini/libblowfish-1.3.a
-	@$(CC) -o $@ $< src/libguildmud.a src/crypt_blowfish-1.3-mini/libblowfish-1.3.a $(C_FLAGS_TEST) $(L_FLAGS_TEST) 
+	@$(CC) -o $@ $< src/libguildmud.a src/crypt_blowfish-1.3-mini/libblowfish-1.3.a $(C_FLAGS_TEST) -Isrc/ $(L_FLAGS_TEST) -Lsrc/
 
 tests/%.c: tests/%.test
 	@checkmk $< > $@
