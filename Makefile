@@ -1,7 +1,7 @@
 CC      = gcc
-C_FLAGS = -Wall -pedantic -Werror -g
+C_FLAGS = -Wall -pedantic -Werror -g -std=gnu99
 L_FLAGS = -lz -lpthread -lsqlite3
-C_FLAGS_TEST = -Wall -pedantic -Werror -g
+C_FLAGS_TEST = -Wall -pedantic -Werror -g -std=gnu99
 L_FLAGS_TEST = -lz -lcheck -lpthread -lsqlite3
 
 # os-dependent flags
