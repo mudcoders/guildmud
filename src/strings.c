@@ -185,30 +185,3 @@ char *strdup(const char *s)
 
   return pstr;
 }
-
-int strcasecmp(const char *s1, const char *s2)
-{
-  int i = 0;
-
-  while (s1[i] != '\0' && s2[i] != '\0' && toupper(s1[i]) == toupper(s2[i]))
-    i++;
-
-  /* if they matched, return 0 */
-  if (s1[i] == '\0' && s2[i] == '\0')
-    return 0;
-
-  /* is s1 a prefix of s2? */
-  if (s1[i] == '\0')
-    return -110;
-
-  /* is s2 a prefix of s1? */
-  if (s2[i] == '\0')
-    return 110;
-
-  /* is s1 less than s2? */
-  if (toupper(s1[i]) < toupper(s2[i]))
-    return -1;
-
-  /* s2 is less than s1 */
-  return 1;
-}
