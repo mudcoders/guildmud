@@ -131,6 +131,7 @@ struct dSocket
   unsigned char   compressing;                 /* MCCP support */
   z_stream      * out_compress;                /* MCCP support */
   unsigned char * out_compress_buf;            /* MCCP support */
+  bool            gmcp_enabled;                /* GMCP support */
 };
 
 struct dMobile
@@ -207,6 +208,8 @@ extern const unsigned char compress_will2[];
 #define TELOPT_COMPRESS       85
 #define TELOPT_COMPRESS2      86
 #define COMPRESS_BUF_SIZE   8192
+
+#define TELOPT_GMCP          201
 
 /***********************
  * End of MCCP support *
@@ -310,6 +313,13 @@ void  cmd_linkdead            ( D_M *dMob, char *arg );
  */
 bool  compressStart           ( D_S *dsock, unsigned char teleopt );
 bool  compressEnd             ( D_S *dsock, unsigned char teleopt, bool forced );
+
+/*
+ * gmcp.c
+ */
+bool gmcpEnable               ( D_S *dsock );
+bool gmcpSend                 ( D_S *dsock, const char *data );
+void gmcpReceived             ( D_S *dsock );
 
 /*
  * save.c

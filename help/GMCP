@@ -1,0 +1,19 @@
+The intention of GMCP (and its predecessors such as ATCP) is to allow
+"out of band" information to be sent from the MUD server to the client, or
+the client to the server. In this context "out of band" means "invisible
+to the player". The messages are enclosed with Telnet escape sequences,
+and as such clients (that support these sequences) accept these messages
+but do not display them directly on the screen.
+
+Thus, a server can send details like room numbers, available exits, player
+health and mana, changes to inventory and quests, and other details. This
+greatly simplifies client design, because instead of clients having to
+match and parse very specific textual elements (like "prompt" lines)
+which can be subject to change, or suppression, the client can instead
+interpret the GMCP data which should not change, even if the player
+alters their configuration.
+
+It also allows clients to easily display some things (like chat messages,
+combat information) in separate windows, or panes of an existing window,
+without there being any ambiguity about what a particular message means.
+
