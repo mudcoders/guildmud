@@ -266,7 +266,6 @@ int     fread_number          ( FILE *fp );                 /* just an integer *
  */
 char   *one_arg               ( char *fStr, char *bStr );
 char   *strdup                ( const char *s );
-int     strcasecmp            ( const char *s1, const char *s2 );
 bool    is_prefix             ( const char *aStr, const char *bStr );
 char   *capitalize            ( char *txt );
 BUFFER *__buffer_new          ( int size );
