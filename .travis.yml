@@ -10,10 +10,13 @@ matrix:
             - zlib1g-dev
             - sqlite3
             - libsqlite3-dev
+            - check
+            - libsubunit-dev
     - os: osx
+      before_install:
+        - brew install check
 
 compiler: gcc
 
 script:
-  - cd src
-  - make
+  - make test
