@@ -27,6 +27,10 @@ src/libguildmud.a: $(OBJ_FILES)
 .c.o: all
 	@$(CC) -c $(C_FLAGS) -o $@ $<
 
+telnet-test:
+	@echo "Requires guildmud to be running"
+	@cd tests/ && find . -maxdepth 1 -name '*.tcl' -exec {} \; && cd ..
+
 test: $(CHECK_FILES_EXE)
 	@find tests/ -maxdepth 1 -name '*.run' -exec {} \;
 
