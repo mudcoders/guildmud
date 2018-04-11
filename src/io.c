@@ -9,6 +9,7 @@
 #include <stdarg.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 /* include main header file */
 #include "mud.h"
@@ -176,7 +177,7 @@ char *fread_line(FILE *fp)
 int fread_number(FILE *fp)
 {
   int c, number = 0;
-  bool negative = FALSE;
+  bool negative = false;
 
   /* initial read */
   c = getc(fp);
@@ -192,7 +193,7 @@ int fread_number(FILE *fp)
     abort();
   }
   else if (c == '-')
-    negative = TRUE;
+    negative = true;
   else if (!isdigit(c))
   {
     bug("Fread_number: Not a number.");

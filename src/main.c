@@ -15,6 +15,7 @@
 #include <time.h>
 #include <sys/ioctl.h>
 #include <errno.h>
+#include <stdbool.h>
 
 /* including main header file */
 #include "mud.h"
@@ -46,10 +47,10 @@ int main(int argc, char **argv)
 
   if (argc > 2 && !strcmp(argv[argc-1], "copyover") && atoi(argv[argc-2]) > 0)
   {
-    fCopyOver = TRUE;
+    fCopyOver = true;
     control = atoi(argv[argc-2]);
   }
-  else fCopyOver = FALSE;
+  else fCopyOver = false;
 
   /* initialize the socket */
   if (!fCopyOver)

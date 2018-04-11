@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <check.h>
+#include <stdbool.h>
 
 #include "mud.h"
 
@@ -12,12 +13,12 @@
 #tcase check_is_prefix
 
 #test is_prefix_A_A
-    ck_assert_msg(TRUE == is_prefix("A", "A"), "is_prefix A, A should have returned true");
+    ck_assert_msg(true == is_prefix("A", "A"), "is_prefix A, A should have returned true");
 #test is_prefix_A_AA
-    ck_assert_msg(TRUE == is_prefix("A", "AA"), "is_prefix A, AA should have returned true");
+    ck_assert_msg(true == is_prefix("A", "AA"), "is_prefix A, AA should have returned true");
 #test is_prefix_A_AAA
-    ck_assert_msg(TRUE == is_prefix("A", "AAA"), "is_prefix A, AAA should have returned true");
+    ck_assert_msg(true == is_prefix("A", "AAA"), "is_prefix A, AAA should have returned true");
 #test is_prefix_A_AAAZ
-    ck_assert_msg(TRUE == is_prefix("A", "AAAZ"), "is_prefix A, AAAZ should have returned true");
+    ck_assert_msg(true == is_prefix("A", "AAAZ"), "is_prefix A, AAAZ should have returned true");
 #test is_prefix_A_B_fail
-    ck_assert_msg(TRUE != is_prefix("A", "B"), "is_prefix A, B should have returned false");
+    ck_assert_msg(true != is_prefix("A", "B"), "is_prefix A, B should have returned false");

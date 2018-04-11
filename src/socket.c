@@ -17,6 +17,7 @@
 #include <time.h>
 #include <sys/ioctl.h>
 #include <errno.h>
+#include <stdbool.h>
 
 /* including main header file */
 #include "mud.h"
@@ -39,7 +40,7 @@ const unsigned char gmcp_will       [] = { IAC, WILL, TELOPT_GMCP,      '\0' };
 void GameLoop         ( int control );
 
 /* intialize shutdown state */
-bool shut_down = FALSE;
+bool shut_down = false;
 int  control;
 
 void GameLoop(int control)
@@ -101,7 +102,7 @@ void GameLoop(int control)
        */
       if (FD_ISSET(dsock->control, &rFd) && !read_from_socket(dsock))
       {
-        close_socket(dsock, FALSE);
+        close_socket(dsock, false);
         continue;
       }
 
@@ -136,7 +137,7 @@ void GameLoop(int control)
 
       /* Send all new data to the socket and close it if any errors occour */
       if (!flush_output(dsock))
-        close_socket(dsock, FALSE);
+        close_socket(dsock, false);
     }
     DetachIterator(&Iter);
 
@@ -316,7 +317,7 @@ bool new_socket(int sock)
   init_events_socket(sock_new);
 
   /* everything went as it was supposed to */
-  return TRUE;
+  return true;
 }
 
 /*
@@ -377,7 +378,7 @@ bool read_from_socket(D_SOCKET *dsock)
   if (size >= sizeof(dsock->inbuf) - 2)
   {
     text_to_socket(dsock, "\n\r!!!! Input Overflow !!!!\n\r");
-    return FALSE;
+    return false;
   }
 
   /* start reading from the socket */
@@ -398,18 +399,18 @@ bool read_from_socket(D_SOCKET *dsock)
     else if (sInput == 0)
     {
       log_string("Read_from_socket: EOF");
-      return FALSE;
+      return false;
     }
     else if (errno == EAGAIN || sInput == wanted)
       break;
     else
     {
       perror("Read_from_socket");
-      return FALSE;
+      return false;
     }
   }
   dsock->inbuf[size] = '\0';
-  return TRUE;
+  return true;
 }
 
 /*
@@ -439,7 +440,7 @@ bool text_to_socket(D_SOCKET *dsock, const char *txt)
         int status = deflate(dsock->out_compress, Z_SYNC_FLUSH);
 
         if (status != Z_OK)
-        return FALSE;
+        return false;
       }
 
       length = dsock->out_compress->next_out - dsock->out_compress_buf;
@@ -451,7 +452,7 @@ bool text_to_socket(D_SOCKET *dsock, const char *txt)
           if ((iWrt = write(control, dsock->out_compress_buf + iPtr, iBlck)) < 0)
           {
             perror("Text_to_socket (compressed):");
-            return FALSE;
+            return false;
           }
         }
         if (iWrt <= 0) break;
@@ -464,7 +465,7 @@ bool text_to_socket(D_SOCKET *dsock, const char *txt)
         }
       }
     }
-    return TRUE;
+    return true;
   }
 
   /* write uncompressed */
@@ -474,11 +475,11 @@ bool text_to_socket(D_SOCKET *dsock, const char *txt)
     if ((iWrt = write(control, txt + iPtr, iBlck)) < 0)
     {
       perror("Text_to_socket:");
-      return FALSE;
+      return false;
     }
   }
 
-  return TRUE;
+  return true;
 }
 
 /*
@@ -492,7 +493,7 @@ bool text_to_socket(D_SOCKET *dsock, const char *txt)
 void text_to_buffer(D_SOCKET *dsock, const char *txt)
 {
   static char output[8 * MAX_BUFFER];
-  bool underline = FALSE, bold = FALSE;
+  bool underline = false, bold = false;
   int iPtr = 0, last = -1, j, k;
   int length = strlen(txt);
 
@@ -562,7 +563,7 @@ void text_to_buffer(D_SOCKET *dsock, const char *txt)
           txt++;
           if (underline)
           {
-            underline = FALSE;
+            underline = false;
             output[iPtr++] =  27; output[iPtr++] = '['; output[iPtr++] = '0';
             if (bold)
             {
@@ -580,7 +581,7 @@ void text_to_buffer(D_SOCKET *dsock, const char *txt)
           }
           else
           {
-            underline = TRUE;
+            underline = true;
             output[iPtr++] =  27; output[iPtr++] = '[';
             output[iPtr++] = '4'; output[iPtr++] = 'm';
           }
@@ -599,8 +600,8 @@ void text_to_buffer(D_SOCKET *dsock, const char *txt)
           txt++;
           if (last != -1 || underline || bold)
           {
-            underline = FALSE;
-            bold = FALSE;
+            underline = false;
+            bold = false;
             output[iPtr++] =  27; output[iPtr++] = '[';
             output[iPtr++] = '0'; output[iPtr++] = 'm';
           }
@@ -611,31 +612,31 @@ void text_to_buffer(D_SOCKET *dsock, const char *txt)
         /* check for valid color tag and parse */
         else
         {
-          bool validTag = FALSE;
+          bool validTag = false;
 
           for (j = 0; ansiTable[j].cString[0] != '\0'; j++)
           {
             if (*txt == ansiTable[j].cTag)
             {
-              validTag = TRUE;
+              validTag = true;
 
               /* we only add the color sequence if it's needed */
               if (last != j)
               {
-                bool cSequence = FALSE;
+                bool cSequence = false;
 
                 /* escape sequence */
                 output[iPtr++] = 27; output[iPtr++] = '[';
 
                 /* remember if a color change is needed */
                 if (last == -1 || last / 2 != j / 2)
-                  cSequence = TRUE;
+                  cSequence = true;
 
                 /* handle font boldness */
                 if (bold && ansiTable[j].aFlag == eTHIN)
                 {
                   output[iPtr++] = '0';
-                  bold = FALSE;
+                  bold = false;
 
                   if (underline)
                   {
@@ -644,12 +645,12 @@ void text_to_buffer(D_SOCKET *dsock, const char *txt)
 
                   /* changing to eTHIN wipes the old color */
                   output[iPtr++] = ';';
-                  cSequence = TRUE;
+                  cSequence = true;
                 }
                 else if (!bold && ansiTable[j].aFlag == eBOLD)
                 {
                   output[iPtr++] = '1';
-                  bold = TRUE;
+                  bold = true;
 
                   if (cSequence)
                     output[iPtr++] = ';';
@@ -713,14 +714,14 @@ void text_to_mobile(D_MOBILE *dMob, const char *txt)
   if (dMob->socket)
   {
     text_to_buffer(dMob->socket, txt);
-    dMob->socket->bust_prompt = TRUE;
+    dMob->socket->bust_prompt = true;
   }
 }
 
 void next_cmd_from_buffer(D_SOCKET *dsock)
 {
   int size = 0, i = 0, j = 0, telopt = 0;
-  bool gmcp = FALSE;
+  bool gmcp = false;
 
   /* if theres already a command ready, we return */
   if (dsock->next_command[0] != '\0')
@@ -755,7 +756,7 @@ void next_cmd_from_buffer(D_SOCKET *dsock)
     else if (telopt == 1 && gmcp && dsock->inbuf[i] == (signed char) SE)
     {
       telopt = 0;
-      gmcp = FALSE;
+      gmcp = false;
       dsock->next_command[j] = '\0';
       gmcpReceived(dsock);
       dsock->next_command[j = 0] = '\0';
@@ -769,21 +770,21 @@ void next_cmd_from_buffer(D_SOCKET *dsock)
         if (dsock->inbuf[i-1] == (signed char) DO)                  /* start compressing   */
           compressStart(dsock, TELOPT_COMPRESS);
         else if (dsock->inbuf[i-1] == (signed char) DONT)           /* stop compressing    */
-          compressEnd(dsock, TELOPT_COMPRESS, FALSE);
+          compressEnd(dsock, TELOPT_COMPRESS, false);
       }
       else if (dsock->inbuf[i] == (signed char) TELOPT_COMPRESS2)   /* check for version 2 */
       {
         if (dsock->inbuf[i-1] == (signed char) DO)                  /* start compressing   */
           compressStart(dsock, TELOPT_COMPRESS2);
         else if (dsock->inbuf[i-1] == (signed char) DONT)           /* stop compressing    */
-          compressEnd(dsock, TELOPT_COMPRESS2, FALSE);
+          compressEnd(dsock, TELOPT_COMPRESS2, false);
       }
       else if (dsock->inbuf[i] == (signed char) TELOPT_GMCP)        /* check for gmcp */
       {
         if (dsock->inbuf[i-1] == (signed char) DO)
           gmcpEnable(dsock);
         else if (dsock->inbuf[i-1] == (signed char) SB) {
-          gmcp = TRUE;
+          gmcp = true;
         }
       }
     }
@@ -797,7 +798,7 @@ void next_cmd_from_buffer(D_SOCKET *dsock)
   /* skip forward to the next line */
   while (dsock->inbuf[size] == '\n' || dsock->inbuf[size] == '\r')
   {
-    dsock->bust_prompt = TRUE;   /* seems like a good place to check */
+    dsock->bust_prompt = true;   /* seems like a good place to check */
     size++;
   }
 
@@ -817,27 +818,27 @@ bool flush_output(D_SOCKET *dsock)
 {
   /* nothing to send */
   if (dsock->top_output <= 0 && !(dsock->bust_prompt && dsock->state == STATE_PLAYING))
-    return TRUE;
+    return true;
 
   /* bust a prompt */
   if (dsock->state == STATE_PLAYING && dsock->bust_prompt)
   {
     text_to_buffer(dsock, "\n\rSocketMud:> ");
-    dsock->bust_prompt = FALSE;
+    dsock->bust_prompt = false;
   }
 
   /* reset the top pointer */
   dsock->top_output = 0;
 
   /*
-   * Send the buffer, and return FALSE
+   * Send the buffer, and return false
    * if the write fails.
    */
   if (!text_to_socket(dsock, dsock->outbuf))
-    return FALSE;
+    return false;
 
   /* Success */
-  return TRUE;
+  return true;
 }
 
 void handle_new_connections(D_SOCKET *dsock, char *arg)
@@ -975,7 +976,7 @@ void handle_new_connections(D_SOCKET *dsock, char *arg)
           text_to_socket(dsock, "ERROR: Your pfile is missing!\n\r");
           free_mobile(dsock->player);
           dsock->player = NULL;
-          close_socket(dsock, FALSE);
+          close_socket(dsock, false);
           return;
         }
         else
@@ -1006,7 +1007,7 @@ void handle_new_connections(D_SOCKET *dsock, char *arg)
         text_to_socket(dsock, "Bad password!\n\r");
         free_mobile(dsock->player);
         dsock->player = NULL;
-        close_socket(dsock, FALSE);
+        close_socket(dsock, false);
       }
       break;
   }
@@ -1022,7 +1023,7 @@ void clear_socket(D_SOCKET *sock_new, int sock)
   sock_new->player         =  NULL;
   sock_new->top_output     =  0;
   sock_new->events         =  AllocList();
-  sock_new->gmcp_enabled   =  FALSE;
+  sock_new->gmcp_enabled   =  false;
 }
 
 /* does the lookup, changes the hostname, and dies */
@@ -1076,7 +1077,7 @@ void recycle_sockets()
     FreeList(dsock->events);
 
     /* stop compression */
-    compressEnd(dsock, dsock->compressing, TRUE);
+    compressEnd(dsock, dsock->compressing, true);
 
     /* put the socket in the free stack */
     PushStack(dsock, dsock_free);

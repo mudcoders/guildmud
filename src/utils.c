@@ -8,13 +8,15 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <stdbool.h>
+
 
 /* include main header file */
 #include "mud.h"
 
 /*
  * Check to see if a given name is
- * legal, returning FALSE if it
+ * legal, returning false if it
  * fails our high standards...
  */
 bool check_name(const char *name)
@@ -22,12 +24,12 @@ bool check_name(const char *name)
   int size, i;
 
   if ((size = strlen(name)) < 3 || size > 12)
-    return FALSE;
+    return false;
 
   for (i = 0 ;i < size; i++)
-    if (!isalpha(name[i])) return FALSE;
+    if (!isalpha(name[i])) return false;
 
-  return TRUE;
+  return true;
 }
 
 void clear_mobile(D_MOBILE *dMob)
@@ -183,19 +185,19 @@ void copyover_recover()
     }
     else /* ah bugger */
     {
-      close_socket(dsock, FALSE);
+      close_socket(dsock, false);
       continue;
     }
 
     /* Write something, and check if it goes error-free */
     if (!text_to_socket(dsock, "\n\r <*>  And before you know it, everything has changed  <*>\n\r"))
     {
-      close_socket(dsock, FALSE);
+      close_socket(dsock, false);
       continue;
     }
 
     /* make sure the socket can be used */
-    dsock->bust_prompt    =  TRUE;
+    dsock->bust_prompt    =  true;
     dsock->lookup_status  =  TSTATE_DONE;
     dsock->state          =  STATE_PLAYING;
 
@@ -218,7 +220,7 @@ D_MOBILE *check_reconnect(char *player)
     {
       if (dMob->socket)
       {
-        close_socket(dMob->socket, TRUE);
+        close_socket(dMob->socket, true);
       }
 
       break;

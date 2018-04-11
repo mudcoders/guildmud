@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <time.h>
 #include <dirent.h> 
+#include <stdbool.h>
+
 
 /* include main header file */
 #include "mud.h"
@@ -39,7 +41,7 @@ bool check_help(D_MOBILE *dMob, char *helpfile)
   ITERATOR Iter;
   char buf[MAX_HELP_ENTRY + 80];
   char *entry, *hFile;
-  bool found = FALSE;
+  bool found = false;
 
   hFile = capitalize(helpfile);
 
@@ -48,7 +50,7 @@ bool check_help(D_MOBILE *dMob, char *helpfile)
   {
     if (is_prefix(helpfile, pHelp->keyword))
     {
-      found = TRUE;
+      found = true;
       break;
     }
   }
@@ -67,10 +69,10 @@ bool check_help(D_MOBILE *dMob, char *helpfile)
   {
     /* helpfiles do not contain double dots (no moving out of the helpdir) */
     if (strstr(hFile, "..") != NULL)
-      return FALSE;
+      return false;
 
     if ((entry = read_help_entry(hFile)) == NULL)
-      return FALSE;
+      return false;
     else
     {
       if ((pHelp = (HELP_DATA *) malloc(sizeof(*pHelp))) == NULL)
@@ -88,7 +90,7 @@ bool check_help(D_MOBILE *dMob, char *helpfile)
   snprintf(buf, MAX_HELP_ENTRY + 80, "=== %s ===\n\r%s", pHelp->keyword, pHelp->text);
   text_to_mobile(dMob, buf);
 
-  return TRUE;
+  return true;
 }
 
 /*

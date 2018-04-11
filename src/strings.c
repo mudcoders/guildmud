@@ -7,6 +7,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdbool.h>
 
 /* include main header file */
 #include "mud.h"
@@ -17,20 +18,20 @@
 bool is_prefix(const char *aStr, const char *bStr)
 {
   /* NULL strings never compares */
-  if (aStr == NULL || bStr == NULL) return FALSE;
+  if (aStr == NULL || bStr == NULL) return false;
 
   /* empty strings never compares */
-  if (aStr[0] == '\0' || bStr[0] == '\0') return FALSE;
+  if (aStr[0] == '\0' || bStr[0] == '\0') return false;
 
   /* check if aStr is a prefix of bStr */
   while (*aStr)
   {
     if (tolower(*aStr++) != tolower(*bStr++))
-      return FALSE;
+      return false;
   }
 
   /* success */
-  return TRUE;
+  return true;
 }
 
 char *one_arg(char *fStr, char *bStr)

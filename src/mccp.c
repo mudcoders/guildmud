@@ -14,6 +14,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 #include "mud.h"
 
@@ -46,7 +47,7 @@ bool compressStart(D_SOCKET *dsock, unsigned char teleopt)
 
   /* already compressing */
   if (dsock->out_compress)
-    return TRUE;
+    return true;
 
   /* allocate and init stream, buffer */
   s = (z_stream *) malloc(sizeof(*s));
@@ -64,7 +65,7 @@ bool compressStart(D_SOCKET *dsock, unsigned char teleopt)
   {
     free(dsock->out_compress_buf);
     free(s);
-    return FALSE;
+    return false;
   }
 
   /* version 1 or 2 support */
@@ -77,7 +78,7 @@ bool compressStart(D_SOCKET *dsock, unsigned char teleopt)
     bug("Bad teleoption %d passed", teleopt);
     free(dsock->out_compress_buf);
     free(s);
-    return FALSE;
+    return false;
   }
 
   /* now we're compressing */
@@ -85,7 +86,7 @@ bool compressStart(D_SOCKET *dsock, unsigned char teleopt)
   dsock->out_compress = s;
 
   /* success */
-  return TRUE;
+  return true;
 }
 
 /* Cleanly shut down compression on `desc' */
@@ -94,10 +95,10 @@ bool compressEnd(D_SOCKET *dsock, unsigned char teleopt, bool forced)
   unsigned char dummy[1];
 
   if (!dsock->out_compress)
-    return TRUE;
+    return true;
 
   if (dsock->compressing != teleopt)
-    return FALSE;
+    return false;
 
   dsock->out_compress->avail_in = 0;
   dsock->out_compress->next_in = dummy;
@@ -105,11 +106,11 @@ bool compressEnd(D_SOCKET *dsock, unsigned char teleopt, bool forced)
 
   /* No terminating signature is needed - receiver will get Z_STREAM_END */
   if (deflate(dsock->out_compress, Z_FINISH) != Z_STREAM_END && !forced)
-    return FALSE;
+    return false;
 
   /* try to send any residual data */
   if (!processCompressed(dsock) && !forced)
-    return FALSE;
+    return false;
 
   /* reset compression values */
   deflateEnd(dsock->out_compress);
@@ -120,7 +121,7 @@ bool compressEnd(D_SOCKET *dsock, unsigned char teleopt, bool forced)
   dsock->out_compress_buf = NULL;
 
   /* success */
-  return TRUE;
+  return true;
 }
 
 /* Try to send any pending compressed-but-not-sent data in `desc' */
@@ -129,7 +130,7 @@ bool processCompressed(D_SOCKET *dsock)
   int iStart, nBlock, nWrite, len;
 
   if (!dsock->out_compress)
-    return TRUE;
+    return true;
     
   len = dsock->out_compress->next_out - dsock->out_compress_buf;
   if (len > 0)
@@ -143,7 +144,7 @@ bool processCompressed(D_SOCKET *dsock)
           break;
 
         /* write error */
-        return FALSE;
+        return false;
       }
       if (nWrite <= 0)
         break;
@@ -159,5 +160,5 @@ bool processCompressed(D_SOCKET *dsock)
   }
 
   /* success */
-  return TRUE;
+  return true;
 }

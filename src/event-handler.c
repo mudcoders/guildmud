@@ -3,6 +3,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdbool.h>
+
 
 /* include main header file */
 #include "mud.h"
@@ -28,7 +30,7 @@ bool enqueue_event(EVENT_DATA *event, int game_pulses)
   if (event->ownertype == EVENT_UNOWNED)
   {
     bug("enqueue_event: event type %d with no owner.", event->type);
-    return FALSE;
+    return false;
   }
 
   /* An event must be enqueued into the future */
@@ -49,7 +51,7 @@ bool enqueue_event(EVENT_DATA *event, int game_pulses)
   AttachToList(event, eventqueue[bucket]);
 
   /* success */
-  return TRUE;
+  return true;
 }
 
 /* function   :: dequeue_event()
@@ -181,7 +183,7 @@ void heartbeat()
      *
      * bool event_function ( EVENT_DATA *event );
      *
-     * Any event returning TRUE is not dequeued, it is assumed
+     * Any event returning true is not dequeued, it is assumed
      * that the event has dequeued itself.
      */
     if (!((*event->fun)(event)))
@@ -221,7 +223,7 @@ void add_event_mobile(EVENT_DATA *event, D_MOBILE *dMob, int delay)
   AttachToList(event, dMob->events);
 
   /* attempt to enqueue the event */
-  if (enqueue_event(event, delay) == FALSE)
+  if (enqueue_event(event, delay) == false)
     bug("add_event_mobile: event type %d failed to be enqueued.", event->type);
 }
 
@@ -256,7 +258,7 @@ void add_event_socket(EVENT_DATA *event, D_SOCKET *dSock, int delay)
   AttachToList(event, dSock->events);
 
   /* attempt to enqueue the event */
-  if (enqueue_event(event, delay) == FALSE)
+  if (enqueue_event(event, delay) == false)
     bug("add_event_socket: event type %d failed to be enqueued.", event->type);
 }
 
@@ -290,7 +292,7 @@ void add_event_game(EVENT_DATA *event, int delay)
   AttachToList(event, global_events);
 
   /* attempt to enqueue the event */
-  if (enqueue_event(event, delay) == FALSE)
+  if (enqueue_event(event, delay) == false)
     bug("add_event_game: event type %d failed to be enqueued.", event->type);
 }
 
