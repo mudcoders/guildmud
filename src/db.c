@@ -2,6 +2,7 @@
 #include <sqlite3.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 /* main header file */
 #include "mud.h"
@@ -18,10 +19,10 @@ bool db_open()
 
     db_close();
 
-    return FALSE;
+    return false;
   }
 
-  return TRUE;
+  return true;
 }
 
 bool db_close()
@@ -30,10 +31,10 @@ bool db_close()
   {
     bug("Unable to close database: %s", sqlite3_errmsg(db));
 
-    return FALSE;
+    return false;
   }
 
-  return TRUE;
+  return true;
 }
 
 bool db_execute(const char *sql, ...)
@@ -48,23 +49,23 @@ bool db_execute(const char *sql, ...)
   va_end(vars);
 
   if ( stmt == NULL ) {
-    return FALSE;
+    return false;
   }
 
 
   if ( db_step(stmt) != SQLITE_DONE ) {
     bug("Failed to step through statement: %s", sqlite3_errmsg(db));
 
-    return FALSE;
+    return false;
   }
 
   if ( db_finalize(stmt) != SQLITE_OK ) {
     bug("Failed to finalize statement: %s", sqlite3_errmsg(db));
 
-    return FALSE;
+    return false;
   }
 
-  return TRUE;
+  return true;
 }
 
 sqlite3_stmt *db_prepare(const char *sql, ...)

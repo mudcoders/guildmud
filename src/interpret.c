@@ -3,6 +3,7 @@
  */
 #include <sys/types.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 /* include main header file */
 #include "mud.h"
@@ -11,7 +12,7 @@ void handle_cmd_input(D_SOCKET *dsock, char *arg)
 {
   D_MOBILE *dMob;
   char command[MAX_BUFFER];
-  bool found_cmd = FALSE;
+  bool found_cmd = false;
   int i;
 
   if ((dMob = dsock->player) == NULL)
@@ -25,7 +26,7 @@ void handle_cmd_input(D_SOCKET *dsock, char *arg)
 
     if (is_prefix(command, tabCmd[i].cmd_name))
     {
-      found_cmd = TRUE;
+      found_cmd = true;
       (*tabCmd[i].cmd_funct)(dMob, arg);
     }
   }

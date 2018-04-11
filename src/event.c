@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 /* include main header file */
 #include "mud.h"
@@ -28,7 +29,7 @@ bool event_game_tick(EVENT_DATA *event)
   event->type = EVENT_GAME_TICK;
   add_event_game(event, 10 * 60 * PULSES_PER_SECOND);
 
-  return FALSE;
+  return false;
 }
 
 bool event_mobile_save(EVENT_DATA *event)
@@ -36,13 +37,13 @@ bool event_mobile_save(EVENT_DATA *event)
   D_MOBILE *dMob;
 
   /* Check to see if there is an owner of this event.
-   * If there is no owner, we return TRUE, because
+   * If there is no owner, we return true, because
    * it's the safest - and post a bug message.
    */
   if ((dMob = event->owner.dMob) == NULL)
   {
     bug("event_mobile_save: no owner.");
-    return TRUE;
+    return true;
   }
 
   /* save the actual player file */
@@ -54,7 +55,7 @@ bool event_mobile_save(EVENT_DATA *event)
   event->type = EVENT_MOBILE_SAVE;
   add_event_mobile(event, dMob, 2 * 60 * PULSES_PER_SECOND);
 
-  return FALSE;
+  return false;
 }
 
 bool event_socket_idle(EVENT_DATA *event)
@@ -62,22 +63,22 @@ bool event_socket_idle(EVENT_DATA *event)
   D_SOCKET *dSock;
 
   /* Check to see if there is an owner of this event.
-   * If there is no owner, we return TRUE, because
+   * If there is no owner, we return true, because
    * it's the safest - and post a bug message.
    */
   if ((dSock = event->owner.dSock) == NULL)
   {
     bug("event_socket_idle: no owner.");
-    return TRUE;
+    return true;
   }
 
   /* tell the socket that it has idled out, and close it */
   text_to_socket(dSock, "You have idled out...\n\n\r");
-  close_socket(dSock, FALSE);
+  close_socket(dSock, false);
 
   /* since we closed the socket, all events owned
    * by that socket has been dequeued, and we need
-   * to return TRUE, so the caller knows this.
+   * to return true, so the caller knows this.
    */
-  return TRUE;
+  return true;
 }

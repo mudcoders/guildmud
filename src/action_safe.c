@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 /* include main header file */
 #include "mud.h"
@@ -31,12 +32,12 @@ void cmd_quit(D_MOBILE *dMob, char *arg)
 
   dMob->socket->player = NULL;
   free_mobile(dMob);
-  close_socket(dMob->socket, FALSE);
+  close_socket(dMob->socket, false);
 }
 
 void cmd_shutdown(D_MOBILE *dMob, char *arg)
 {
-  shut_down = TRUE;
+  shut_down = true;
 }
 
 void cmd_commands(D_MOBILE *dMob, char *arg)
@@ -128,7 +129,7 @@ void cmd_compress(D_MOBILE *dMob, char *arg)
   }
   else /* disable compression */
   {
-    if (!compressEnd(dMob->socket, dMob->socket->compressing, FALSE))
+    if (!compressEnd(dMob->socket, dMob->socket->compressing, false))
     {
       text_to_mobile(dMob, "Failed.\n\r");
       return;
@@ -162,12 +163,12 @@ void cmd_copyover(D_MOBILE *dMob, char *arg)
   AttachIterator(&Iter, dsock_list);
   while ((dsock = (D_SOCKET *) NextInList(&Iter)) != NULL)
   {
-    compressEnd(dsock, dsock->compressing, FALSE);
+    compressEnd(dsock, dsock->compressing, false);
 
     if (dsock->state != STATE_PLAYING)
     {
       text_to_socket(dsock, "\n\rSorry, we are rebooting. Come back in a few minutes.\n\r");
-      close_socket(dsock, FALSE);
+      close_socket(dsock, false);
     }
     else
     {
@@ -205,7 +206,7 @@ void cmd_linkdead(D_MOBILE *dMob, char *arg)
   D_MOBILE *xMob;
   ITERATOR Iter;
   char buf[MAX_BUFFER];
-  bool found = FALSE;
+  bool found = false;
 
   AttachIterator(&Iter, dmobile_list);
   while ((xMob = (D_MOBILE *) NextInList(&Iter)) != NULL)
@@ -214,7 +215,7 @@ void cmd_linkdead(D_MOBILE *dMob, char *arg)
     {
       snprintf(buf, MAX_BUFFER, "%s is linkdead.\n\r", xMob->name);
       text_to_mobile(dMob, buf);
-      found = TRUE;
+      found = true;
     }
   }
   DetachIterator(&Iter);

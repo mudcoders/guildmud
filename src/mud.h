@@ -18,14 +18,6 @@
  * Standard definitions *
  ************************/
 
-/* define TRUE and FALSE */
-#ifndef FALSE
-#define FALSE   0
-#endif
-#ifndef TRUE
-#define TRUE    1
-#endif
-
 #define eTHIN   0
 #define eBOLD   1
 
@@ -65,7 +57,6 @@
 #define COMM_LOG              10  /* admins only                     */
 
 /* define simple types */
-typedef  unsigned char     bool;
 typedef  short int         sh_int;
 
 
@@ -78,14 +69,14 @@ typedef  short int         sh_int;
  ***********************/
 
 #define UMIN(a, b)		((a) < (b) ? (a) : (b))
-#define IS_ADMIN(dMob)          ((dMob->level) > LEVEL_PLAYER ? TRUE : FALSE)
+#define IS_ADMIN(dMob)          ((dMob->level) > LEVEL_PLAYER ? true : false)
 #define IREAD(sKey, sPtr)             \
 {                                     \
   if (!strcasecmp(sKey, word))        \
   {                                   \
     int sValue = fread_number(fp);    \
     sPtr = sValue;                    \
-    found = TRUE;                     \
+    found = true;                     \
     break;                            \
   }                                   \
 }
@@ -94,7 +85,7 @@ typedef  short int         sh_int;
   if (!strcasecmp(sKey, word))        \
   {                                   \
     sPtr = fread_string(fp);          \
-    found = TRUE;                     \
+    found = true;                     \
     break;                            \
   }                                   \
 }
