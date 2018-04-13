@@ -27,6 +27,9 @@ src/libguildmud.a: $(OBJ_FILES)
 .c.o: all
 	@$(CC) -c $(C_FLAGS) -o $@ $<
 
+telnet-test:
+	@echo "Requires guildmud to be running"
+	@cd tests/ && find . -maxdepth 1 -name '*.tcl' -exec {} \; && cd ..
 
 test: $(CHECK_FILES_EXE)
 	@find tests/ -maxdepth 1 -name '*.run' -exec {} \;
@@ -43,7 +46,7 @@ install:
 .PHONY: clean
 clean:
 	@echo Cleaning code ...
-	@rm -rf src/*.o src/guildmud src/libguildmud.a src/*~ tests/*.c tests/run* tests/*.dSYM src/*.dSYM
+	@rm -rf src/*.o src/guildmud src/libguildmud.a src/*~ tests/*.c tests/*.run tests/*.dSYM src/*.dSYM
 	@rm -rf src/crypt_blowfish-1.3-mini/*.o src/crypt_blowfish-1.3-mini/*~ src/crypt_blowfish-1.3-mini/*a src/crypt_blowfish-1.3-mini/mini-test
 
 # Blowfish compilation rules
