@@ -7,6 +7,7 @@
 
 /* main header file */
 #include "mud.h"
+#include "db.h"
 
 void save_player(D_MOBILE *dMob)
 {
