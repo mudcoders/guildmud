@@ -6,10 +6,37 @@
 
 /* main header file */
 #include "mud.h"
+#include "db.h"
 
 sqlite3     *  db;
 
 sqlite3_stmt *db_prepare_internal(const char *sql, va_list vars);
+int get_db_schema();
+
+/*
+ * Array of commands to be executed by db_migrate to apply changes to the database.
+ * 
+ */
+
+typedef struct migration_commands {
+    int schema;
+    char *action;
+} migration_commands;
+
+migration_commands command[] = {
+/*  { DB_SCHEMA, Action to upgrade the database to the DB_SCHEMA } */  
+    { 0, "CREATE TABLE IF NOT EXISTS players (id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE, password TEXT NOT NULL, level INTEGER)" },
+    { 1, "CREATE TABLE IF NOT EXISTS NEXT_ID (ID DECIMAL(9,0) NOT NULL)" },
+    { 1, "INSERT INTO NEXT_ID (ID) VALUES(1)"},
+    {-1, NULL } // Sentinel to identify end of commands. DO NOT REMOVE.
+}; 
+
+
+
+/*
+ * Open the global database.
+ * 
+ */
 
 bool db_open()
 {
@@ -25,6 +52,11 @@ bool db_open()
   return true;
 }
 
+/*
+ * Close the global database.
+ * 
+ */
+
 bool db_close()
 {
   if (sqlite3_close(db) != SQLITE_OK )
@@ -36,6 +68,11 @@ bool db_close()
 
   return true;
 }
+
+/*
+ * Execute a query to the database expecting no answer.
+ * Used for things like DROP, INSERT, CREATE TABLE...
+ */
 
 bool db_execute(const char *sql, ...)
 {
@@ -51,7 +88,6 @@ bool db_execute(const char *sql, ...)
   if ( stmt == NULL ) {
     return false;
   }
-
 
   if ( db_step(stmt) != SQLITE_DONE ) {
     bug("Failed to step through statement: %s", sqlite3_errmsg(db));
@@ -174,18 +210,86 @@ sqlite3_stmt *db_prepare_internal(const char *sql, va_list vars)
 void db_migrate()
 {
 
+  int db_schema = get_db_schema();
+  int i = 0;
+
   if ( !db_open() )
   {
     abort();
   }
 
-  /* players table */
-  if ( !db_execute("CREATE TABLE IF NOT EXISTS players (id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE, password TEXT NOT NULL, level INTEGER)") )
-  {
-    abort();
+  if (-1 == db_schema) {
+    if(  !db_execute("CREATE TABLE IF NOT EXISTS DB_SCHEMA (db_version DECIMAL(6,0) NOT NULL)")
+      || !db_execute("INSERT INTO DB_SCHEMA (db_version) VALUES(1)")) {
+      abort();
+    }
+  }
+
+  db_execute("BEGIN EXCLUSIVE TRANSACTION");
+  while(command[i].schema != -1) {
+    if (command[i].schema > db_schema) {
+      if ( !db_execute(command[i].action) ) {
+        db_execute("ROLLBACK TRANSACTION");  
+        abort();
+      }
+    }
+    if( !db_execute("UPDATE DB_SCHEMA SET db_version = %i", command[i].schema) ) {
+      db_execute("ROLLBACK TRANSACTION");  
+      abort();
+    }
+    i++;
+  }
+  db_execute("COMMIT TRANSACTION");
+
+
+  if(command[i-1].schema > db_schema ) {
+    log_string("db_schema updated to version %d", command[i-1].schema);
+  } else {
+    log_string("Current db_schema: %d", db_schema);
   }
 
   db_close();
 
   return;
+}
+
+
+/*
+ * Retrieve the schema version.
+ * 
+ * SELECT db_version FROM DB_SCHEMA
+ * 
+ */
+
+int get_db_schema()
+{
+  sqlite3_stmt *stmt;
+  int db_schema = -1;
+  
+  if ( !db_open() )
+  {
+    abort();
+  }
+
+  stmt = db_prepare("SELECT db_version FROM DB_SCHEMA");
+
+  if ( stmt == NULL )
+  {
+    db_close();
+    return db_schema;
+  }
+
+  if ( db_step(stmt) == SQLITE_ROW ) {
+    db_schema      = sqlite3_column_int(stmt, 0);
+  }
+
+  if ( db_finalize(stmt) != SQLITE_OK ) {
+    bug("Failed to finalize statement: %s", sqlite3_errmsg(db));
+
+    abort();
+  }
+
+  db_close();
+
+  return db_schema;
 }
