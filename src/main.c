@@ -19,6 +19,7 @@
 
 /* including main header file */
 #include "mud.h"
+#include "db.h"
 
 /*
  * This is where it all starts, nothing special.
