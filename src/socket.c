@@ -903,9 +903,9 @@ void handle_new_connections(D_SOCKET *dsock, char *arg)
       dsock->player = p_new;
       break;
     case STATE_NEW_PASSWORD:
-      if (strlen(arg) < 5 || strlen(arg) > 12)
+      if (strlen(arg) < 5 || strlen(arg) >= 256)
       {
-        text_to_buffer(dsock, "Between 5 and 12 chars please!\n\rPlease enter a new password: ");
+        text_to_buffer(dsock, "Between 5 and 256 chars please!\n\rPlease enter a new password: ");
         return;
       }
 
@@ -913,7 +913,15 @@ void handle_new_connections(D_SOCKET *dsock, char *arg)
       snprintf(salt, sizeof(salt), "$2y$12$%s%s$", pepper, dsock->player->name);
       dsock->player->password = strdup(crypt(arg, salt));
 
-      if(0 == strncmp("*0", dsock->player->password, 2)) {
+      /*
+       * We check our encrypted password is not "*0" or "*1".
+       * This is one of the ways the blowcrypt API signals some
+       * internal error.
+       * 
+       */ 
+
+      if(0 == strncmp("*0", dsock->player->password, 2)
+      || 0 == strncmp("*1", dsock->player->password, 2)) {
           text_to_buffer(dsock, "Illegal password!\n\rPlease enter a new password: ");
           return;
       }
