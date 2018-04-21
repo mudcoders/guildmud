@@ -13,6 +13,7 @@
 #include "list.h"
 #include "stack.h"
 #include "crypt_blowfish-1.3-mini/ow-crypt.h"
+#include "db.h"
 
 /************************
  * Standard definitions *
@@ -317,16 +318,6 @@ void  save_player             ( D_M *dMob );
 D_M  *load_player             ( char *player );
 D_M  *load_profile            ( char *player );
 
-/*
- * db.c
- */
-bool           db_open        ( void );
-bool           db_close       ( void );
-bool           db_execute     ( const char *sql, ... );
-sqlite3_stmt  *db_prepare     (const char *sql, ...);
-int            db_step        (sqlite3_stmt *stmt);
-int            db_finalize    (sqlite3_stmt *stmt);
-void           db_migrate     ( void );
 
 /*******************************
  * End of prototype declartion *
