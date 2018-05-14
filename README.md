@@ -27,6 +27,21 @@ When you are finished coding, the `vagrant halt` command will shut the virtual m
 
 **Note: If for whatever reason the development environment isn't working as expected, you can re-provision it with the `vagrant provision` command, or you can burn it down and start over using `vagrant destroy` followed by `vagrant up`.
 
+#### MacOS development environment
+
+For macOS there's no need to setup vagrant, and having macOS Xcode installed including the Command Line tools plus some brew packages is enough.
+
+The easiest way to install XCode with the Comman Line Tools is, at the command line term:
+
+`$ xcode-select --install`
+
+once this is done, proceed to install [brew](https://brew.sh/) (if not installed)
+
+and install the following packages:
+
+`$ brew install sqlite check` 
+
+
 ### Compiling GuildMUD
 
 To compile and start GuildMUD, first log into the development machine using the `vagrant ssh` command and then navigate to the `./src` directory. Then, simply run the `make` command to compile the `guildmud` binary.
